@@ -5,6 +5,7 @@ import {supabase} from './supabase/client.js';
 import SignUp from "./pages/SignUp/SignUp";
 import LogIn from "./pages/LogIn/LogIn";
 import Home from "./pages/Home/Home";
+import NotFound from "./pages/NotFound/NotFound";
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -34,11 +35,14 @@ const App = () => {
                         <Route path="/" element={<Home/>}/>
                         <Route path="/" element={<Home/>}/>
                         <Route path="/home" element={<Home/>}/>
+                        <Route path="*" element={<NotFound/>}/>
                     </Routes>
                     :
                     <Routes>
                         <Route path="/" element={<LogIn/>}/>
-                        <Route path="/signup" element={<SignUp/>}/>
+                        <Route path="/log-in" element={<LogIn/>}/>
+                        <Route path="/sign-up" element={<SignUp/>}/>
+                        <Route path="*" element={<NotFound/>}/>
                     </Routes>
                 }
             </Router>
