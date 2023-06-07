@@ -8,31 +8,28 @@ import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
 
 const App = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [session, setSession] = useState(null)
 
     useEffect(() => {
-        const {data: authListener} = supabase.auth.onAuthStateChange(
-            (event, session) => {
-                if (event === 'SIGNED_IN') {
-                    setIsLoggedIn(true);
-                } else if (event === 'SIGNED_OUT') {
-                    setIsLoggedIn(false);
-                }
-            }
-        );
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session)
+        })
 
-        return () => {
-            authListener.subscription.unsubscribe();
-        };
-    }, []);
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session)
+        })
+
+        return () => subscription.unsubscribe()
+    }, [])
 
     return (
         <div className="App">
             <Router>
-                {isLoggedIn
+                {session
                     ?
                     <Routes>
-                        <Route path="/" element={<Home/>}/>
                         <Route path="/" element={<Home/>}/>
                         <Route path="/home" element={<Home/>}/>
                         <Route path="*" element={<NotFound/>}/>
@@ -40,9 +37,7 @@ const App = () => {
                     :
                     <Routes>
                         <Route path="/" element={<LogIn/>}/>
-                        <Route path="/log-in" element={<LogIn/>}/>
                         <Route path="/sign-up" element={<SignUp/>}/>
-                        <Route path="*" element={<NotFound/>}/>
                     </Routes>
                 }
             </Router>
