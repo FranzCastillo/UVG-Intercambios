@@ -13,14 +13,36 @@ import Container from '@mui/material/Container';
 import './SignUp.scss';
 import {useState} from "react";
 import {supabase} from "../../supabase/client";
+import {isWhitelisted} from "../../supabase/AccountsQueries";
+import NotAllowedAlert from "../../components/Alerts/NotAllowedAlert";
+import UserAlreadyExistsAlert from "../../components/Alerts/UserAlreadyExistsAlert";
+import {useNavigate} from "react-router-dom";
 
 export default function SignUp() {
-
+    const [userAlreadyExists, setUserAlreadyExists] = useState(false);
+    const [isWhitelistedUser, setIsWhitelistedUser] = useState(true);
     const [isPasswordLengthValid, setIsPasswordLengthValid] = useState(true);
     const [isNameFilled, setIsNameFilled] = useState(true);
     const [isLastNameFilled, setIsLastNameFilled] = useState(true);
     const [isEmailFilled, setIsEmailFilled] = useState(true);
     const helper = "Este campo es obligatorio";
+
+    const navigate = useNavigate();
+
+    const signUp = async (email, password, name, lastName) => {
+        const { error} = await supabase.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                name: name,
+                lastName: lastName
+            }
+        });
+        if (error) {
+            console.log(error);
+            setUserAlreadyExists(true);
+        }
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -35,23 +57,20 @@ export default function SignUp() {
         setIsLastNameFilled(lastName.length > 0);
         setIsEmailFilled(email.length > 0);
 
-        // if (isPasswordLengthValid && isNameFilled && isLastNameFilled && isEmailFilled) {
-        //     try {
-        //         const { user, error } = await supabase.auth.signInWithPassword({
-        //             email: email,
-        //             password: password
-        //         });
-        //
-        //         if (error) {
-        //             console.log('Error:', error.message);
-        //         } else {
-        //             console.log('Successfully signed in:', user);
-        //         }
-        //     } catch (error) {
-        //         console.log('Error:', error.message);
-        //     }
-        // }
-    };
+        if (password.length >= 6 && name.length > 0 && lastName.length > 0 && email.length > 0) {
+            const whiteListed = await isWhitelisted(email);
+            try{
+                if (whiteListed) {
+                    await signUp(email, password, name, lastName);
+                    navigate('/home');
+                } else {
+                    setIsWhitelistedUser(false);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
 
     return (
         <div className={"sign-up"}>
@@ -141,6 +160,8 @@ export default function SignUp() {
                         </Grid>
                     </Box>
                 </Box>
+                {!isWhitelistedUser && <NotAllowedAlert/>}
+                {userAlreadyExists && <UserAlreadyExistsAlert/>}
             </Container>
         </div>
     );
