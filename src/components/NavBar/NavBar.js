@@ -18,7 +18,7 @@ import Logo from '../../assets/images/logo.png';
 import {useNavigate} from "react-router-dom";
 import {supabase} from "../../supabase/client";
 
-const pages = ['Estudiantes de Intercambio', 'Estudiantes', 'Universidades',  'Resumen',];
+const pages = ['Inicio', 'Estudiantes de Intercambio', 'Estudiantes', 'Universidades',  'Resumen',];
 const settings = ['Perfil', 'Cerrar Sesión',];
 
 function NavBar() {
@@ -68,6 +68,43 @@ function NavBar() {
         }
     };
 
+    const handleHome = () => {
+        navigate("/");
+    }
+
+    const handleStudentsInExchanges = () => {
+        navigate("/estudiantes-de-intercambio");
+    }
+
+    const handleStudents = () => {
+        navigate("/estudiantes");
+    }
+
+    const handleUniversities = () => {
+        navigate("/universidades");
+    }
+
+    const handleSummary = () => {
+        navigate("/resumen");
+    }
+
+    const handleMenuClick = (page) => {
+        switch (page) {
+            case 'Inicio':
+                return handleHome;
+            case 'Estudiantes de Intercambio':
+                return handleStudentsInExchanges;
+            case 'Estudiantes':
+                return handleStudents;
+            case 'Universidades':
+                return handleUniversities;
+            case 'Resumen':
+                return handleSummary;
+            default:
+                return handleCloseNavMenu;
+        }
+    }
+
     return (
         <AppBar position="static" sx={{bgcolor: '#9BBE43'}}>
             <Container maxWidth="xl" className={"nav-bar"}>
@@ -105,7 +142,7 @@ function NavBar() {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                <MenuItem key={page} onClick={handleMenuClick(page)}>
                                     <Typography textAlign="center">{page}</Typography>
                                 </MenuItem>
                             ))}
@@ -129,7 +166,7 @@ function NavBar() {
                         {pages.map((page) => (
                             <Button
                                 key={page}
-                                onClick={handleCloseNavMenu}
+                                onClick={handleMenuClick(page)}
                                 sx={{ my: 2, color: 'black', display: 'block', fontSize: '15px',  }}
                             >
                                 {page}
