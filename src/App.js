@@ -6,6 +6,7 @@ import SignUp from "./pages/SignUp/SignUp";
 import LogIn from "./pages/LogIn/LogIn";
 import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
+import Profile from "./pages/Profile/Profile";
 
 const App = () => {
     const [session, setSession] = useState(null)
@@ -32,6 +33,7 @@ const App = () => {
                     <Routes>
                         <Route path="/" element={<Home/>}/>
                         <Route path="/home" element={<Home/>}/>
+                        <Route path="/profile" element={<Profile/>}/>
                         <Route path="*" element={<NotFound/>}/>
                     </Routes>
                     :

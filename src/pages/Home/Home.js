@@ -1,5 +1,6 @@
 import {supabase} from "../../supabase/client";
 import {useNavigate} from "react-router-dom";
+import NavBar from "../../components/NavBar/NavBar";
 
 
 const Home = () => {
@@ -18,6 +19,7 @@ const Home = () => {
 
     return (
         <div>
+            <NavBar/>
             <h1>Home</h1>
             <button onClick={signOut}>Sign Out</button>
         </div>
