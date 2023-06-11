@@ -5,6 +5,9 @@ import Button from "@mui/material/Button";
 import {useNavigate} from "react-router-dom";
 import {getUniversities} from "../../../supabase/UniversitiesQueries";
 import LinearProgress from '@mui/material/LinearProgress';
+import EditIcon from '@mui/icons-material/Edit';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import "./Table.scss";
 
 const RenderButton = ({id}) => {
     const navigate = useNavigate();
@@ -14,7 +17,13 @@ const RenderButton = ({id}) => {
             component="button"
             variant="contained"
             size="small"
-            style={{marginLeft: 16}}
+            style={{
+                display: 'flex',
+                justifyContent: 'space-evenly',
+                width: 100,
+                justifyItems: 'center',
+                alignItems: 'center'
+            }}
             onKeyDown={(event) => {
                 if (event.key === ' ') {
                     event.stopPropagation();
@@ -25,6 +34,37 @@ const RenderButton = ({id}) => {
             }}
         >
             Abrir
+            <OpenInNewIcon className={'icon'}/>
+        </Button>
+    );
+};
+
+const RenderEdit = ({id}) => {
+    const navigate = useNavigate();
+
+    return (
+        <Button
+            component="button"
+            variant="contained"
+            size="small"
+            style={{
+                display: 'flex',
+                justifyContent: 'space-evenly',
+                width: 100,
+                justifyItems: 'center',
+                alignItems: 'center'
+            }}
+            onKeyDown={(event) => {
+                if (event.key === ' ') {
+                    event.stopPropagation();
+                }
+            }}
+            onClick={() => {
+                navigate(`/universidades/edit/${id}`);
+            }}
+        >
+            Editar
+            <EditIcon className={'icon'}/>
         </Button>
     );
 };
@@ -37,6 +77,12 @@ const columns = [
         field: 'redirect',
         headerName: 'Más Información',
         renderCell: (params) => <RenderButton id={params.row.id}/>,
+        width: 150,
+    },
+    {
+        field: 'edit',
+        headerName: 'Editar',
+        renderCell: (params) => <RenderEdit id={params.row.id}/>,
         width: 150,
     },
 ];
