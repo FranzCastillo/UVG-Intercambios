@@ -2,6 +2,8 @@ import * as React from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import {getUniversities} from "../../../supabase/UniversitiesQueries";
+import {useEffect, useState} from "react";
 
 const RenderButton = ({ id }) => {
     const navigate = useNavigate();
@@ -30,8 +32,8 @@ const RenderButton = ({ id }) => {
 
 const columns = [
     { field: 'name', headerName: 'Nombre', width: 350 },
-    { field: 'short_name', headerName: 'Nombre Corto', width: 100 },
-    { field: 'country', headerName: 'País', width: 150 },
+    { field: 'short_name', headerName: 'Nombre Corto', width: 200 },
+    { field: 'country', headerName: 'País', width: 300 },
     {
         field: 'redirect',
         headerName: 'Más Información',
@@ -40,11 +42,22 @@ const columns = [
     },
 ];
 
-const rows = [
-    { id: 1, name: 'Universidad del Valle de Guatemala', short_name: 'UVG', country: 'Guatemala', redirect: 'https://www.uvg.edu.gt/' },
-];
-
 export default function Table() {
+    const [rows, setRows] = useState([]);
+
+    useEffect(() => {
+        const fetchUniversities = async () => {
+            try {
+                const universities = await getUniversities();
+                setRows(universities);
+            } catch (error) {
+                console.error('Error fetching universities:', error);
+            }
+        };
+
+        fetchUniversities();
+    }, []);
+
     return (
         <div style={{ height: '85', width: '100%' }}>
             <DataGrid
