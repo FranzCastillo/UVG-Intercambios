@@ -32,4 +32,27 @@ const getUniversities = async () => {
     }
 }
 
-export {getUniversities};
+const getUniversityById = async (id) => {
+    const {data, error} = await supabase
+        .from('universidades')
+        .select(`
+            id,
+            nombre,
+            nombre_corto,
+            paises(
+                nombre
+            )
+        `)
+        .eq('id', id)
+
+    if (error) {
+        throw error;
+    } else {
+        return transformUniversities(data)[0];
+    }
+}
+
+export {
+    getUniversities,
+    getUniversityById,
+};
