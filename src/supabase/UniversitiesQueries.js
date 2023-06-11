@@ -13,6 +13,16 @@ const transformUniversities = (data) => {
 
 };
 
+const transformUniversity = (data) => {
+    return data.map(({ id, nombre, nombre_corto, paises }) => ({
+        id,
+        name: nombre,
+        short_name: nombre_corto,
+        country: paises.nombre,
+        continent: paises.continentes.nombre,
+    }));
+}
+
 const getUniversities = async () => {
     const {data, error} = await supabase
         .from('universidades')
@@ -40,15 +50,17 @@ const getUniversityById = async (id) => {
             nombre,
             nombre_corto,
             paises(
-                nombre
+                nombre,
+                continentes(
+                    nombre
+                )
             )
         `)
         .eq('id', id)
-
     if (error) {
         throw error;
     } else {
-        return transformUniversities(data)[0];
+        return transformUniversity(data)[0];
     }
 }
 
