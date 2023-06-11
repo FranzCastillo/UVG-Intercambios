@@ -78,12 +78,16 @@ const columns = [
         headerName: 'Más Información',
         renderCell: (params) => <RenderButton id={params.row.id}/>,
         width: 150,
+        sortable: false,
+        filterable: false,
     },
     {
         field: 'edit',
         headerName: 'Editar',
         renderCell: (params) => <RenderEdit id={params.row.id}/>,
         width: 150,
+        sortable: false,
+        filterable: false,
     },
 ];
 
@@ -118,7 +122,6 @@ export default function Table() {
                             },
                         }}
                         pageSizeOptions={[15, 25, 50]}
-                        sortingMode={'server'}
                         disableRowSelectionOnClick={true}
                         slots={{toolbar: GridToolbar}}
                     />

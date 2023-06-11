@@ -1,6 +1,5 @@
-import React from "react";
-import {useNavigate} from "react-router-dom";
-import {supabase} from "../../../supabase/client";
+import React, {useState, useEffect} from "react";
+import {useParams} from 'react-router-dom';
 import "./Edit.scss";
 
 const EditUniversity = () => {
