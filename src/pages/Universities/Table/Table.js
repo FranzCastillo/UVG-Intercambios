@@ -20,7 +20,7 @@ const RenderButton = ({ id }) => {
                 }
             }}
             onClick={() => {
-                navigate(`/universities/${id}`);
+                navigate(`/universidades/${id}`);
             }}
         >
             Abrir
