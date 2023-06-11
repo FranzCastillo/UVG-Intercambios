@@ -60,6 +60,9 @@ const getUniversityById = async (id) => {
     if (error) {
         throw error;
     } else {
+        if(data.length === 0) {
+            throw new Error(`No university with id ${id}`);
+        }
         return transformUniversity(data)[0];
     }
 }
