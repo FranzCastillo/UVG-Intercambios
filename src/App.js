@@ -10,7 +10,10 @@ import Profile from "./pages/Profile/Profile";
 import NavBar from "./components/NavBar/NavBar";
 import StudentsInExchanges from "./pages/StudentsInExchanges/StudentsInExchanges";
 import Students from "./pages/Students/Students";
-import Universities from "./pages/Universities/Universities";
+import Universities from "./pages/Universities/Universities/Universities";
+import UniversityDetails from "./pages/Universities/Details/Details";
+import NewUniversity from "./pages/Universities/New/NewUniversity";
+
 import Summary from "./pages/Summary/Summary";
 
 const App = () => {
@@ -42,7 +45,10 @@ const App = () => {
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/estudiantes-de-intercambio" element={<StudentsInExchanges/>} />
                             <Route path="/estudiantes" element={<Students/>} />
+                            {/*UNIVERSITIES*/}
                             <Route path="/universidades" element={<Universities/>} />
+                            <Route path={"/universidades/new"} element={<NewUniversity/>} />
+                            <Route path={"/universidades/:id"} element={<UniversityDetails/>} />
                             <Route path="/resumen" element={<Summary/>} />
                             <Route path="*" element={<NotFound />} />
                         </Routes>
