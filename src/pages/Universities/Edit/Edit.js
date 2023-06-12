@@ -4,7 +4,6 @@ import {useNavigate, useParams} from 'react-router-dom';
 import {getUniversityById, updateUniversity} from "../../../supabase/UniversitiesQueries";
 import {getCountriesList} from "../../../supabase/GeoQueries";
 import CircularProgress from '@mui/material/CircularProgress';
-import {Paper} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";

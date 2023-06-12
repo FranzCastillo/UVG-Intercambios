@@ -4,7 +4,7 @@ import {supabase} from './client';
 const transformUniversities = (data) => {
     const filteredData = data.filter((obj) => 'id' in obj);
 
-    return filteredData.map(({ id, nombre, nombre_corto, paises }) => ({
+    return filteredData.map(({id, nombre, nombre_corto, paises}) => ({
         id,
         name: nombre,
         short_name: nombre_corto,
@@ -14,7 +14,7 @@ const transformUniversities = (data) => {
 };
 
 const transformUniversity = (data) => {
-    return data.map(({ id, nombre, nombre_corto, paises }) => ({
+    return data.map(({id, nombre, nombre_corto, paises}) => ({
         id,
         name: nombre,
         short_name: nombre_corto,
@@ -62,7 +62,7 @@ const getUniversityById = async (id) => {
     if (error) {
         throw error;
     } else {
-        if(data.length === 0) {
+        if (data.length === 0) {
             throw new Error(`No university with id ${id}`);
         }
         return transformUniversity(data)[0];
@@ -84,8 +84,37 @@ const updateUniversity = async ({id, name, short_name, country_id}) => {
     }
 }
 
+const insertUniversity = async ({name, short_name, country_id}) => {
+    const {error} = await supabase
+        .from('universidades')
+        .insert({
+            nombre: name,
+            nombre_corto: short_name,
+            id_pais: country_id,
+        })
+
+    if (error) {
+        throw new Error(`Error inserting university: ${error.message}`);
+    }
+}
+
+const doesUniversityExist = async (name) => {
+    const {data, error} = await supabase
+        .from('universidades')
+        .select()
+        .ilike('nombre', name)
+
+    if (error) {
+        throw error;
+    } else {
+        return data.length > 0;
+    }
+}
+
 export {
     getUniversities,
     getUniversityById,
     updateUniversity,
+    insertUniversity,
+    doesUniversityExist,
 };
