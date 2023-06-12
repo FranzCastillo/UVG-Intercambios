@@ -21,7 +21,6 @@ const getCountriesList = async () => {
     if (error) {
         throw error;
     } else {
-        console.log(data)
         return transformCountriesList(data);
     }
 }

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./Edit.scss";
-import {useParams} from 'react-router-dom';
-import {getUniversityById} from "../../../supabase/UniversitiesQueries";
+import {useNavigate, useParams} from 'react-router-dom';
+import {getUniversityById, updateUniversity} from "../../../supabase/UniversitiesQueries";
 import {getCountriesList} from "../../../supabase/GeoQueries";
 import CircularProgress from '@mui/material/CircularProgress';
 import {Paper} from "@mui/material";
@@ -28,6 +28,8 @@ const EditUniversity = () => {
     const [loading, setLoading] = useState(true);
     const [countries, setCountries] = useState([]);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         const fetchUniversity = async () => {
             try {
@@ -46,9 +48,21 @@ const EditUniversity = () => {
         fetchUniversity();
     }, [id]);
 
-    const handleSubmit = () => {
-        console.log("handleSubmit");
-    }
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        updateUniversity({
+            id: university.id,
+            name: data.get('name'),
+            short_name: data.get('short_name'),
+            country_id: data.get('countries'),
+        }).then(() => {
+            alert('Universidad actualizada con éxito');
+            navigate(`/universidades/${university.id}`);
+        }).catch((error) => {
+            alert(error.message);
+        });
+    };
 
     return (
         <>
@@ -90,18 +104,20 @@ const EditUniversity = () => {
                                             label="Nombre de la Universidad"
                                             autoFocus
                                             value={university.name}
-                                            InputLabelProps={{ shrink: true }}
+                                            InputLabelProps={{shrink: true}}
+                                            onChange={(e) => setUniversity({...university, name: e.target.value})}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             required
                                             fullWidth
-                                            id="short-name"
+                                            id="short_name"
                                             label="Nombre Corto"
-                                            name="short-name"
+                                            name="short_name"
                                             value={university.short_name}
-                                            InputLabelProps={{ shrink: true }}
+                                            InputLabelProps={{shrink: true}}
+                                            onChange={(e) => setUniversity({...university, short_name: e.target.value})}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -109,19 +125,25 @@ const EditUniversity = () => {
                                             id="countries"
                                             select
                                             label="País"
-                                            defaultValue={university.country}
+                                            defaultValue={university.country_id}
                                             fullWidth
+                                            name="countries"
+                                            value={university.country_id}
+                                            onChange={(e) => setUniversity({...university, country_id: e.target.value})}
                                         >
-                                            {countries ? countries.map((country) => (
-                                                <MenuItem key={country.id} value={country.name}>
-                                                    {country.name}
-                                                </MenuItem>
-                                            )) : (
+                                            {countries ? (
+                                                countries.map((country) => (
+                                                    <MenuItem key={country.id} value={country.id}>
+                                                        {country.name}
+                                                    </MenuItem>
+                                                ))
+                                            ) : (
                                                 <MenuItem value={0}>
                                                     No hay países disponibles
                                                 </MenuItem>
                                             )}
                                         </TextField>
+
                                     </Grid>
                                 </Grid>
                                 <Button
