@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
-import "./NewUniversity.scss";
-import {useNavigate} from 'react-router-dom';
-import {doesUniversityExist, insertUniversity} from "../../../supabase/UniversitiesQueries";
+import React, {useState, useEffect} from "react";
+import "./Edit.scss";
+import {useNavigate, useParams} from 'react-router-dom';
+import {getUniversityById, updateUniversity} from "../../../supabase/UniversitiesQueries";
 import {getCountriesList} from "../../../supabase/GeoQueries";
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from "@mui/material/Typography";
@@ -11,30 +11,30 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
-import DomainAddIcon from '@mui/icons-material/DomainAdd';
+import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 
 
-const NewUniversity = () => {
-    const [university, setUniversity] = useState({
-        short_name: "",
-        country_id: "",
-    });
+const EditUniversity = () => {
+    const {id} = useParams();
+
+    const [university, setUniversity] = useState(null);
     const [errorOccurred, setErrorOccurred] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [countries, setCountries] = useState([]);
-    const [isNameEmpty, setIsNameEmpty] = useState(false);
-    const [isCountryEmpty, setIsCountryEmpty] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchCountries = async () => {
+        const fetchUniversity = async () => {
             try {
+                const universityDetails = await getUniversityById(id);
                 const countriesList = await getCountriesList();
+                setUniversity(universityDetails);
                 setCountries(countriesList)
             } catch (error) {
                 setErrorOccurred(true);
@@ -44,38 +44,24 @@ const NewUniversity = () => {
             }
         };
 
-        fetchCountries();
-    }, []);
+        fetchUniversity();
+    }, [id]);
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        const name = data.get('name');
-        const short_name = data.get('short_name');
-        const country_id = data.get('countries');
-        if (name === '') {
-            setIsNameEmpty(true);
-        }
-        if (country_id === '') {
-            setIsCountryEmpty(true);
-        }
-        if (name !== '' && country_id !== '') {
-            try {
-                const doesExist = await doesUniversityExist(name);
-                if (doesExist) { // RIse error
-                    throw new Error(`La universidad con el nombre "${name}" ya existe`);
-                } else {
-                    insertUniversity({name, short_name, country_id}).then(() => {
-                        alert("Universidad registrada correctamente");
-                        navigate('/universidades');
-                    });
-                }
-            } catch (error) {
-                setErrorOccurred(true);
-                setError(error);
-            }
-        }
-    }
+        updateUniversity({
+            id: university.id,
+            name: data.get('name'),
+            short_name: data.get('short_name'),
+            country_id: data.get('countries'),
+        }).then(() => {
+            alert('Universidad actualizada con éxito');
+            navigate(`/universidades/${university.id}`);
+        }).catch((error) => {
+            alert(error.message);
+        });
+    };
 
     return (
         <>
@@ -101,10 +87,10 @@ const NewUniversity = () => {
                             }}
                         >
                             <Avatar sx={{m: 1, bgcolor: '#0b9e51'}}>
-                                <DomainAddIcon/>
+                                <EditIcon/>
                             </Avatar>
                             <Typography component="h1" variant="h5">
-                                Agregar Universidad
+                                Editar Universidad
                             </Typography>
                             <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt: 3}}>
                                 <Grid container spacing={2}>
@@ -116,20 +102,20 @@ const NewUniversity = () => {
                                             id="name"
                                             label="Nombre de la Universidad"
                                             autoFocus
-                                            error={isNameEmpty}
-                                            helperText={isNameEmpty ? 'Este campo es requerido' : ''}
-                                            onChange={(e) => {
-                                                setUniversity({...university, name: e.target.value});
-                                                setIsNameEmpty(false);
-                                            }}
+                                            value={university.name}
+                                            InputLabelProps={{shrink: true}}
+                                            onChange={(e) => setUniversity({...university, name: e.target.value})}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
+                                            required
                                             fullWidth
                                             id="short_name"
                                             label="Nombre Corto"
                                             name="short_name"
+                                            value={university.short_name}
+                                            InputLabelProps={{shrink: true}}
                                             onChange={(e) => setUniversity({...university, short_name: e.target.value})}
                                         />
                                     </Grid>
@@ -138,16 +124,11 @@ const NewUniversity = () => {
                                             id="countries"
                                             select
                                             label="País"
+                                            defaultValue={university.country_id}
                                             fullWidth
                                             name="countries"
                                             value={university.country_id}
-                                            error={isCountryEmpty}
-                                            helperText={isCountryEmpty ? 'Este campo es requerido' : ''}
-                                            onChange={(e) => {
-                                                const selectedCountryId = e.target.value;
-                                                setUniversity({...university, country_id: selectedCountryId});
-                                                setIsCountryEmpty(false);
-                                            }}
+                                            onChange={(e) => setUniversity({...university, country_id: e.target.value})}
                                         >
                                             {countries ? (
                                                 countries.map((country) => (
@@ -156,7 +137,7 @@ const NewUniversity = () => {
                                                     </MenuItem>
                                                 ))
                                             ) : (
-                                                <MenuItem value="">
+                                                <MenuItem value={0}>
                                                     No hay países disponibles
                                                 </MenuItem>
                                             )}
@@ -190,4 +171,4 @@ const NewUniversity = () => {
     );
 };
 
-export default NewUniversity;
+export default EditUniversity;
