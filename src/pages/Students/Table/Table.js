@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { DataGrid, GridToolbar  } from '@mui/x-data-grid';
+import {RenderButton, RenderEdit} from "../../../components/Buttons/TableButtons";
 
 const columns = [
     { field: 'id', headerName: 'Carné', width: 100, type: 'number' },
@@ -29,6 +30,22 @@ const columns = [
         field: 'gender',
         headerName: 'Género',
         width: 100,
+    },
+    {
+        field: 'redirect',
+        headerName: 'Más Información',
+        renderCell: (params) => <RenderButton path={"estudiantes"} id={params.row.id}/>,
+        width: 150,
+        sortable: false,
+        filterable: false,
+    },
+    {
+        field: 'edit',
+        headerName: 'Editar',
+        renderCell: (params) => <RenderEdit path={"estudiantes"} id={params.row.id}/>,
+        width: 150,
+        sortable: false,
+        filterable: false,
     },
 ];
 
