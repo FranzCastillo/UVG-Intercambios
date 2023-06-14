@@ -13,6 +13,19 @@
     }
   }
 
+  .mail {
+    display: flex;
+    flex-direction: row;
+
+    .title {
+      margin-right: 1rem;
+    }
+
+    .mail-address {
+      color: #999;
+    }
+  }
+
   .career {
     display: flex;
     flex-direction: row;

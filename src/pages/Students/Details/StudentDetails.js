@@ -58,6 +58,14 @@ const StudentDetails = () => {
                                     {student.id}
                                 </Typography>
                             </Paper>
+                            <Paper className="mail">
+                                <Typography variant="h5" className="title" sx={{fontFamily: "Roboto"}}>
+                                    Correo:
+                                </Typography>
+                                <Typography variant="h6" className="mail-address" sx={{fontFamily: "Roboto"}}>
+                                    {student.mail}
+                                </Typography>
+                            </Paper>
                             <Paper className={"career"}>
                                 <Typography variant="h5" className="title" sx={{fontFamily: "Roboto"}}>
                                     Carrera:
