@@ -25,7 +25,37 @@ const doesStudentExist = async (id) => {
     }
 }
 
+const getStudentById = async (id) => {
+    const {data, error} = await supabase
+        .from('estudiantes')
+        .select(`
+            carnet,
+            nombre,
+            carreras(
+                nombre,
+                facultades(
+                    nombre_corto
+                 )
+            )
+        `)
+        .eq('carnet', id)
+
+    if (error) {
+        throw new Error(`Error getting student with id ${id}: ${error.message}`);
+    } else {
+        const transformedData = data.map(({carnet, nombre, carreras}) => ({
+            id: carnet,
+            name: nombre,
+            career: carreras.nombre,
+            faculty: carreras.facultades.nombre_corto,
+        }));
+
+        return transformedData[0];
+    }
+}
+
 export {
+    getStudentById,
     doesStudentExist,
     insertStudent,
 };
