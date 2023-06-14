@@ -49,8 +49,11 @@ const getStudentById = async (id) => {
             career: carreras.nombre,
             faculty: carreras.facultades.nombre_corto,
         }));
-
-        return transformedData[0];
+        if (transformedData.length === 0) {
+            throw new Error(`El estudiante con el carné '${id}' no existe`);
+        } else {
+            return transformedData[0];
+        }
     }
 }
 
