@@ -20,8 +20,8 @@ import {getFaculties, getCareersByFaculty} from "../../../supabase/CareersQuerie
 
 const NewStudent = () => {
     const [student, setStudent] = useState({
-        faculty_id: "",
-        career_id: "",
+        faculty_id: '',
+        career_id: '',
     });
     const [errorOccurred, setErrorOccurred] = useState(false);
     const [error, setError] = useState(null);
@@ -29,6 +29,7 @@ const NewStudent = () => {
     const [isNameEmpty, setIsNameEmpty] = useState(false);
     const [isIdEmpty, setIsIdEmpty] = useState(false);
     const [isFacultyEmpty, setIsFacultyEmpty] = useState(false);
+    const [isCareerEmpty, setIsCareerEmpty] = useState(false);
     const [faculties, setFaculties] = useState([]);
     const [careers, setCareers] = useState([]);
     const navigate = useNavigate();
@@ -47,21 +48,21 @@ const NewStudent = () => {
         fetchFaculties();
     }, []);
 
-    // useEffect(() => {
-    //     const fetchCareers = async () => {
-    //         try {
-    //             const careersList = await getCareers();
-    //             setCareers(careersList)
-    //         } catch (error) {
-    //             setErrorOccurred(true);
-    //             setError(error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //
-    //     fetchCareers();
-    // }, [faculties]);
+    useEffect(() => {
+        const fetchCareers = async () => {
+            try {
+                const careersList = await getCareersByFaculty(student.faculty_id);
+                setCareers(careersList)
+            } catch (error) {
+                setErrorOccurred(true);
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCareers();
+    }, [student.faculty_id]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -188,6 +189,35 @@ const NewStudent = () => {
                                             ) : (
                                                 <MenuItem value="">
                                                     No hay facultades disponibles
+                                                </MenuItem>
+                                            )}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            id="career"
+                                            select
+                                            label="Carrera"
+                                            fullWidth
+                                            name="career"
+                                            value={student.career_id}
+                                            error={isCareerEmpty}
+                                            helperText={isCareerEmpty ? 'Este campo es requerido' : ''}
+                                            onChange={(e) => {
+                                                const selectedCareerId = e.target.value;
+                                                setStudent({...student, career_id: selectedCareerId});
+                                                setIsCareerEmpty(false);
+                                            }}
+                                        >
+                                            {careers ? (
+                                                careers.map((career) => (
+                                                    <MenuItem key={career.id} value={career.id}>
+                                                        {career.name}
+                                                    </MenuItem>
+                                                ))
+                                            ) : (
+                                                <MenuItem value="">
+                                                    No hay carreras disponibles
                                                 </MenuItem>
                                             )}
                                         </TextField>

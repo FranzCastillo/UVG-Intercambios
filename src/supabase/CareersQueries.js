@@ -21,6 +21,7 @@ const getFaculties = async () => {
 }
 
 const getCareersByFaculty = async (facultyId) => {
+    if (!facultyId) return;
     const {data, error} = await supabase
         .from('carreras')
         .select(`
