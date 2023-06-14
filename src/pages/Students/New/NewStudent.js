@@ -16,6 +16,9 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import {insertStudent, doesStudentExist} from "../../../supabase/StudentQueries";
 import {getFaculties, getCareersByFaculty} from "../../../supabase/CareersQueries";
+import RadioGroup from "@mui/material/RadioGroup";
+import {FormControlLabel} from "@mui/material";
+import Radio from "@mui/material/Radio";
 
 
 const NewStudent = () => {
@@ -30,6 +33,7 @@ const NewStudent = () => {
     const [isIdEmpty, setIsIdEmpty] = useState(false);
     const [isFacultyEmpty, setIsFacultyEmpty] = useState(false);
     const [isCareerEmpty, setIsCareerEmpty] = useState(false);
+    const [isMailEmpty, setIsMailEmpty] = useState(false);
     const [faculties, setFaculties] = useState([]);
     const [careers, setCareers] = useState([]);
     const navigate = useNavigate();
@@ -70,22 +74,32 @@ const NewStudent = () => {
         const name = data.get('name');
         const id = data.get('id');
         const career_id = data.get('career');
+        const mail = data.get('mail');
+        const faculty_id = data.get('faculty');
+        const gender = data.get('gender');
+
         if (name === '') {
             setIsNameEmpty(true);
         }
         if (id === '') {
             setIsIdEmpty(true);
         }
+        if (faculty_id === '') {
+            setIsFacultyEmpty(true);
+        }
         if (career_id === '') {
             setIsCareerEmpty(true);
         }
-        if (name !== '' && id !== '' && career_id !== '') {
+        if (mail === '') {
+            setIsMailEmpty(true);
+        }
+        if (name !== '' && id !== '' && career_id !== '' && faculty_id !== '' && mail !== '') {
             try {
                 const doesExist = await doesStudentExist(id);
                 if (doesExist) { // RIse error
                     throw new Error(`El estudiante con carné "${id}" ya existe`);
                 } else {
-                    insertStudent({id, name, career_id}).then(() => {
+                    insertStudent({id, name, mail, career_id, gender}).then(() => {
                         alert("Estudiante registrado correctamente");
                         navigate('/estudiantes');
                     });
@@ -160,6 +174,22 @@ const NewStudent = () => {
                                             }}
                                         />
                                     </Grid>
+                                    <Grid item xs={12} sm={12}>
+                                        <TextField
+                                            id="mail"
+                                            required
+                                            fullWidth
+                                            label="Correo del Estudiante"
+                                            name="mail"
+                                            value={student.mail}
+                                            error={isMailEmpty}
+                                            helperText={isMailEmpty ? 'Este campo es requerido' : ''}
+                                            onChange={(e) => {
+                                                setStudent({...student, mail: e.target.value})
+                                                setIsMailEmpty(false);
+                                            }}
+                                        />
+                                    </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             id="faculty"
@@ -218,6 +248,27 @@ const NewStudent = () => {
                                             )}
                                         </TextField>
                                     </Grid>
+                                </Grid>
+                                <Grid item xs={12} sm={12} sx={{display: 'flex', justifyContent: 'center', }}>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="gender-radio-group"
+                                        name="gender"
+                                        defaultValue={"Femenino"}
+                                    >
+                                        <FormControlLabel
+                                            value="Femenino"
+                                            control={<Radio />}
+                                            label="Femenino"
+                                            labelPlacement={"top"}
+                                        />
+                                        <FormControlLabel
+                                            value="Masculino"
+                                            control={<Radio />}
+                                            label="Masculino"
+                                            labelPlacement={"top"}
+                                        />
+                                    </RadioGroup>
                                 </Grid>
                                 <Button
                                     type="submit"

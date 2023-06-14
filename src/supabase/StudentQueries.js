@@ -34,8 +34,10 @@ const getStudentById = async (id) => {
             correo,
             genero,
             carreras(
+                id,
                 nombre,
                 facultades(
+                    id,
                     nombre_corto
                  )
             )
@@ -51,7 +53,9 @@ const getStudentById = async (id) => {
             mail: correo,
             gender: genero,
             career: carreras.nombre,
+            career_id: carreras.id,
             faculty: carreras.facultades.nombre_corto,
+            faculty_id: carreras.facultades.id,
         }));
         if (transformedData.length === 0) {
             throw new Error(`El estudiante con el carné '${id}' no existe`);
@@ -91,7 +95,25 @@ const getStudents = async () => {
     }
 }
 
+const updateStudent = async ({id, name, mail, career_id, gender}) => {
+    const {error} = await supabase
+        .from('estudiantes')
+        .update({
+            carnet: id,
+            nombre: name,
+            correo: mail,
+            id_carrera: career_id,
+            genero: gender
+        })
+        .eq('carnet', id)
+
+    if (error) {
+        throw new Error(`Error updating student with id ${id}: ${error.message}`);
+    }
+}
+
 export {
+    updateStudent,
     getStudents,
     getStudentById,
     doesStudentExist,
