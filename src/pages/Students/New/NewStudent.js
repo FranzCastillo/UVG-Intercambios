@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from "react";
 import "./NewStudent.scss";
 import {useNavigate} from 'react-router-dom';
-import {doesUniversityExist, insertUniversity} from "../../../supabase/UniversitiesQueries";
-import {getCountriesList} from "../../../supabase/GeoQueries";
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -16,29 +14,69 @@ import SaveIcon from '@mui/icons-material/Save';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
+import {insertStudent, doesStudentExist} from "../../../supabase/StudentQueries";
+import {getFaculties, getCareersByFaculty} from "../../../supabase/CareersQueries";
 
 
 const NewStudent = () => {
     const [student, setStudent] = useState({
-        name: "",
-        id: "",
+        faculty_id: "",
         career_id: "",
     });
     const [errorOccurred, setErrorOccurred] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [countries, setCountries] = useState([]);
     const [isNameEmpty, setIsNameEmpty] = useState(false);
-    const [isIDempty, setIsIDempty] = useState(false);
+    const [isIdEmpty, setIsIdEmpty] = useState(false);
+    const [isFacultyEmpty, setIsFacultyEmpty] = useState(false);
+    const [faculties, setFaculties] = useState([]);
+    const [careers, setCareers] = useState([]);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const fetchFaculties = async () => {
+            try {
+                const facultiesList = await getFaculties();
+                setFaculties(facultiesList)
+            } catch (error) {
+                setErrorOccurred(true);
+                setError(error);
+            }
+        }
+
+        fetchFaculties();
+    }, []);
+
+    // useEffect(() => {
+    //     const fetchCareers = async () => {
+    //         try {
+    //             const careersList = await getCareers();
+    //             setCareers(careersList)
+    //         } catch (error) {
+    //             setErrorOccurred(true);
+    //             setError(error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //
+    //     fetchCareers();
+    // }, [faculties]);
+
     const handleSubmit = async (event) => {
-        console.log("handleSubmit")}
-    //     event.preventDefault();
-    //     const data = new FormData(event.currentTarget);
-    //     const name = data.get('name');
-    //     const short_name = data.get('short_name');
-    //     const country_id = data.get('countries');
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const name = data.get('name');
+        const id = data.get('id');
+        const career_id = data.get('career_id');
+        const careers = await getFaculties();
+        console.log({
+            name,
+            id,
+            career_id,
+            careers
+        });
+    }
     //     if (name === '') {
     //         setIsNameEmpty(true);
     //     }
@@ -102,11 +140,11 @@ const NewStudent = () => {
                                             id="id"
                                             label="Carné del Estudiante"
                                             autoFocus
-                                            error={isIDempty}
-                                            helperText={isIDempty ? 'Este campo es requerido' : ''}
+                                            error={isIdEmpty}
+                                            helperText={isIdEmpty ? 'Este campo es requerido' : ''}
                                             onChange={(e) => {
                                                 setStudent({...student, id: e.target.value});
-                                                setIsIDempty(false);
+                                                setIsIdEmpty(false);
                                             }}
                                         />
                                     </Grid>
@@ -125,35 +163,35 @@ const NewStudent = () => {
                                             }}
                                         />
                                     </Grid>
-                                    {/*<Grid item xs={12} sm={6}>*/}
-                                    {/*    <TextField*/}
-                                    {/*        id="faculty"*/}
-                                    {/*        select*/}
-                                    {/*        label="Facultad"*/}
-                                    {/*        fullWidth*/}
-                                    {/*        name="faculty"*/}
-                                    {/*        value={university.country_id}*/}
-                                    {/*        error={isCountryEmpty}*/}
-                                    {/*        helperText={isCountryEmpty ? 'Este campo es requerido' : ''}*/}
-                                    {/*        onChange={(e) => {*/}
-                                    {/*            const selectedCountryId = e.target.value;*/}
-                                    {/*            setUniversity({...university, country_id: selectedCountryId});*/}
-                                    {/*            setIsCountryEmpty(false);*/}
-                                    {/*        }}*/}
-                                    {/*    >*/}
-                                    {/*        {countries ? (*/}
-                                    {/*            countries.map((country) => (*/}
-                                    {/*                <MenuItem key={country.id} value={country.id}>*/}
-                                    {/*                    {country.name}*/}
-                                    {/*                </MenuItem>*/}
-                                    {/*            ))*/}
-                                    {/*        ) : (*/}
-                                    {/*            <MenuItem value="">*/}
-                                    {/*                No hay países disponibles*/}
-                                    {/*            </MenuItem>*/}
-                                    {/*        )}*/}
-                                    {/*    </TextField>*/}
-                                    {/*</Grid>*/}
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            id="faculty"
+                                            select
+                                            label="Facultad"
+                                            fullWidth
+                                            name="faculty"
+                                            value={student.faculty_id}
+                                            error={isFacultyEmpty}
+                                            helperText={isFacultyEmpty ? 'Este campo es requerido' : ''}
+                                            onChange={(e) => {
+                                                const selectedFacultyId = e.target.value;
+                                                setStudent({...student, faculty_id: selectedFacultyId});
+                                                setIsFacultyEmpty(false);
+                                            }}
+                                        >
+                                            {faculties ? (
+                                                faculties.map((faculty) => (
+                                                    <MenuItem key={faculty.id} value={faculty.id}>
+                                                        {faculty.short_name}
+                                                    </MenuItem>
+                                                ))
+                                            ) : (
+                                                <MenuItem value="">
+                                                    No hay facultades disponibles
+                                                </MenuItem>
+                                            )}
+                                        </TextField>
+                                    </Grid>
                                 </Grid>
                                 <Button
                                     type="submit"
