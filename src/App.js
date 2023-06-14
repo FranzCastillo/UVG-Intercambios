@@ -9,12 +9,15 @@ import NotFound from "./pages/NotFound/NotFound";
 import Profile from "./pages/Profile/Profile";
 import NavBar from "./components/NavBar/NavBar";
 import StudentsInExchanges from "./pages/StudentsInExchanges/StudentsInExchanges";
-import Students from "./pages/Students/Students";
+import Students from "./pages/Students/Students/Students";
 import Universities from "./pages/Universities/Universities/Universities";
 import UniversityDetails from "./pages/Universities/Details/Details";
 import NewUniversity from "./pages/Universities/New/NewUniversity";
 import Summary from "./pages/Summary/Summary";
 import EditUniversity from "./pages/Universities/Edit/Edit";
+import NewStudent from "./pages/Students/New/NewStudent";
+import StudentDetails from "./pages/Students/Details/StudentDetails";
+import EditStudent from "./pages/Students/Edit/EditStudent";
 
 const App = () => {
     const [session, setSession] = useState(null)
@@ -44,7 +47,11 @@ const App = () => {
                             <Route path="/home" element={<Home/>}/>
                             <Route path="/profile" element={<Profile/>}/>
                             <Route path="/estudiantes-de-intercambio" element={<StudentsInExchanges/>}/>
+                            {/*STUDENTS*/}
                             <Route path="/estudiantes" element={<Students/>}/>
+                            <Route path="/estudiantes/:id" element={<StudentDetails/>}/>
+                            <Route path="/estudiantes/new" element={<NewStudent/>}/>
+                            <Route path="/estudiantes/edit/:id" element={<EditStudent/>}/>
                             {/*UNIVERSITIES*/}
                             <Route path="/universidades" element={<Universities/>}/>
                             <Route path={"/universidades/new"} element={<NewUniversity/>}/>
