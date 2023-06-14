@@ -69,38 +69,34 @@ const NewStudent = () => {
         const data = new FormData(event.currentTarget);
         const name = data.get('name');
         const id = data.get('id');
-        const career_id = data.get('career_id');
-        const careers = await getFaculties();
-        console.log({
-            name,
-            id,
-            career_id,
-            careers
-        });
+        const career_id = data.get('career');
+        if (name === '') {
+            setIsNameEmpty(true);
+        }
+        if (id === '') {
+            setIsIdEmpty(true);
+        }
+        if (career_id === '') {
+            setIsCareerEmpty(true);
+        }
+        if (name !== '' && id !== '' && career_id !== '') {
+            try {
+                const doesExist = await doesStudentExist(id);
+                if (doesExist) { // RIse error
+                    throw new Error(`El estudiante con carné "${id}" ya existe`);
+                } else {
+                    insertStudent({id, name, career_id}).then(() => {
+                        alert("Estudiante registrado correctamente");
+                        navigate('/estudiantes');
+                    });
+                }
+            } catch (error) {
+                setErrorOccurred(true);
+                setError(error);
+            }
+        }
     }
-    //     if (name === '') {
-    //         setIsNameEmpty(true);
-    //     }
-    //     if (country_id === '') {
-    //         setIsCountryEmpty(true);
-    //     }
-    //     if (name !== '' && country_id !== '') {
-    //         try {
-    //             const doesExist = await doesUniversityExist(name);
-    //             if (doesExist) { // RIse error
-    //                 throw new Error(`La universidad con el nombre "${name}" ya existe`);
-    //             } else {
-    //                 insertUniversity({name, short_name, country_id}).then(() => {
-    //                     alert("Universidad registrada correctamente");
-    //                     navigate('/universidades');
-    //                 });
-    //             }
-    //         } catch (error) {
-    //             setErrorOccurred(true);
-    //             setError(error);
-    //         }
-    //     }
-    // }
+
 
     return (
         <>
