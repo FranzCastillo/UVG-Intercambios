@@ -3,8 +3,17 @@ import {Paper} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import "./Students.scss"
 import Table from '../Table/Table'
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import Button from "@mui/material/Button";
+import {useNavigate} from "react-router-dom";
+
 
 const Students = () => {
+    const navigate = useNavigate();
+    const handleRegister = () => {
+        navigate("/estudiantes/new");
+    }
+
     return (
         <Container
             maxWidth={"xl"}
@@ -18,6 +27,19 @@ const Students = () => {
                 >
                     Estudiantes
                 </Typography>
+                <Button
+                    variant="contained"
+                    color="success"
+                    sx={{
+                        width: "150px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                    }}
+                    onClick={handleRegister}
+                >
+                    <PersonAddIcon/>
+                    Registrar
+                </Button>
             </Paper>
             <Table />
         </Container>
