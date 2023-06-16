@@ -8,7 +8,7 @@ import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
 import Profile from "./pages/Profile/Profile";
 import NavBar from "./components/NavBar/NavBar";
-import StudentsInExchanges from "./pages/StudentsInExchanges/StudentsInExchanges";
+import StudentsInExchanges from "./pages/StudentsInExchanges/Page/StudentsInExchanges";
 import Students from "./pages/Students/Students/Students";
 import Universities from "./pages/Universities/Universities/Universities";
 import UniversityDetails from "./pages/Universities/Details/Details";
