@@ -11,17 +11,18 @@ const columns = [
     {
         field: 'year',
         headerName: 'Año',
-        width: 100,
+        width: 60,
         type: 'number'},
     {
         field: 'semester',
         headerName: 'Semestre',
-        width: 100,
+        width: 80,
         type: 'number'},
     {
         field: 'student',
         headerName: 'Estudiante',
-        width: 350},
+        width: 200}
+    ,
     {
         field: 'modality',
         headerName: 'Modalidad',
@@ -30,22 +31,22 @@ const columns = [
     {
         field: 'cycle',
         headerName: 'Ciclo',
-        width: 100,
+        width: 150,
     },
     {
         field: 'university',
         headerName: 'Universidad a visitar',
-        width: 200,
+        width: 225,
     },
     {
         field: 'state',
         headerName: 'Estado de Nominación',
-        width: 100,
+        width: 175,
     },
     {
         field: 'date',
         headerName: 'Fecha de Viaje',
-        width: 100,
+        width: 130,
     },
     {
         field: 'assignation',

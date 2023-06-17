@@ -18,6 +18,9 @@ import EditUniversity from "./pages/Universities/Edit/Edit";
 import NewStudent from "./pages/Students/New/NewStudent";
 import StudentDetails from "./pages/Students/Details/StudentDetails";
 import EditStudent from "./pages/Students/Edit/EditStudent";
+import NewExchange from "./pages/StudentsInExchanges/New/NewExchange";
+import EditExchange from "./pages/StudentsInExchanges/Edit/EditExchange";
+import ExchangeDetails from "./pages/StudentsInExchanges/Details/ExchangeDetails";
 
 const App = () => {
     const [session, setSession] = useState(null)
@@ -46,7 +49,11 @@ const App = () => {
                             <Route path="/" element={<Home/>}/>
                             <Route path="/home" element={<Home/>}/>
                             <Route path="/profile" element={<Profile/>}/>
+                            {/*INTERCAMBIOS*/}
                             <Route path="/estudiantes-de-intercambio" element={<StudentsInExchanges/>}/>
+                            <Route path="/estudiantes-de-intercambio/new" element={<NewExchange/>}/>
+                            <Route path="/estudiantes-de-intercambio/edit/:id" element={<EditExchange/>}/>
+                            <Route path="/estudiantes-de-intercambio/:id" element={<ExchangeDetails/>}/>
                             {/*STUDENTS*/}
                             <Route path="/estudiantes" element={<Students/>}/>
                             <Route path="/estudiantes/:id" element={<StudentDetails/>}/>
