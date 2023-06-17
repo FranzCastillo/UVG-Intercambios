@@ -5,6 +5,7 @@ import {getUniversities} from "../../../supabase/UniversitiesQueries";
 import LinearProgress from '@mui/material/LinearProgress';
 import "./Table.scss";
 import {RenderButton, RenderEdit} from "../../../components/Buttons/TableButtons";
+import {getStudentsInExchanges} from "../../../supabase/ExchangeQueries";
 
 const columns = [
     {
@@ -69,15 +70,18 @@ const columns = [
 ];
 
 export default function Table() {
-    // const [rows, setRows] = useState([{}]);
+    const [rows, setRows] = useState([]);
 
-    const rows = [
-        {
-            id: 1,
-            year: 2023,
-            semester: 1
-        }
-    ]
+    useEffect(() => {
+        getStudentsInExchanges()
+            .then((data) => {
+                console.log('Students in exchanges:', data)
+                setRows(data);
+            })
+            .catch((error) => {
+                console.error('Error fetching students in exchanges:', error)
+            });
+    }, []);
 
     return (
         <>
