@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from "react";
 import "./NewExchange.scss";
 import {useNavigate} from 'react-router-dom';
-import {doesUniversityExist, insertUniversity} from "../../../supabase/UniversitiesQueries";
-import {getCountriesList} from "../../../supabase/GeoQueries";
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -22,20 +20,18 @@ import {getModalities, getStates} from "../../../supabase/MiscellaneousQueries";
 
 
 const NewExchange = () => {
+    const navigate = useNavigate();
+
     const [errorOccurred, setErrorOccurred] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [countries, setCountries] = useState([]);
-    const [isNameEmpty, setIsNameEmpty] = useState(false);
-    const [isCountryEmpty, setIsCountryEmpty] = useState(false);
-    const navigate = useNavigate();
 
-    const [university, setUniversity] = useState({
-        short_name: "",
-        country_id: "",
+    const [exchange, setExchange] = useState({
+        modality: '',
+        state: '',
+        university: '',
     });
 
-    const [modality, setModality] = useState('');
     const [modalities, setModalities] = useState([]);
     useEffect(() => {
         getModalities()
@@ -46,15 +42,8 @@ const NewExchange = () => {
                 setErrorOccurred(true);
                 setError(error);
             })
-            .finally(() => {
-                setLoading(false);
-            });
     }, []);
-    const handleModalityChange = (event) => {
-        setModality(event.target.value);
-    }
 
-    const [state, setState] = useState('');
     const [states, setStates] = useState([]);
     useEffect(() => {
         getStates()
@@ -65,13 +54,7 @@ const NewExchange = () => {
                 setErrorOccurred(true);
                 setError(error);
             })
-            .finally(() => {
-                setLoading(false);
-            });
     }, []);
-    const handleStateChange = (event) => {
-        setState(event.target.value);
-    }
 
     const [universities, setUniversities] = useState([]);
     useEffect(() => {
@@ -95,25 +78,66 @@ const NewExchange = () => {
     }, []);
 
     useEffect(() => {
-        const fetchCountries = async () => {
-            try {
-                const countriesList = await getCountriesList();
-                setCountries(countriesList)
-            } catch (error) {
-                setErrorOccurred(true);
-                setError(error);
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (modalities.length > 0 && states.length > 0 && universities.length > 0) {
+            setLoading(false);
+        }
+    }, [modalities, states, universities]);
 
-        fetchCountries();
-    }, []);
+    const [isYearEmpty, setIsYearEmpty] = useState(false);
+    const [isSemesterEmpty, setIsSemesterEmpty] = useState(false);
+    const [isStudentEmpty, setIsStudentEmpty] = useState(false);
+    const [isUniversityEmpty, setIsUniversityEmpty] = useState(false);
+
+    const handleCheckStudent = (studentId) => {
+        console.log(studentId);
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-    }
+        const year = data.get('year');
+        const semester = data.get('semester');
+        const student = data.get('student');
+        const university = data.get('university');
+        const modality = data.get('modality');
+        const state = data.get('state');
+        const cycle = data.get('cycle');
+        const date = data.get('date');
+        const coursesUvg = data.get('coursesUvg');
+        const coursesExchange = data.get('coursesExchange');
+        const comments = data.get('comments');
+
+        if (year === '') {
+            setIsYearEmpty(true);
+        }
+        if (semester === '') {
+            setIsSemesterEmpty(true);
+        }
+        if (student === '') {
+            setIsStudentEmpty(true);
+        }
+        if (university === null) {
+            setIsUniversityEmpty(true);
+        }
+
+        console.log({
+            year,
+            semester,
+            student,
+            university,
+            modality,
+            state,
+            cycle,
+            date,
+            coursesUvg,
+            coursesExchange,
+            comments,
+        });
+
+        if (year === '' || semester === '' || student === '' || university === null) {
+            return;
+        }
+    };
 
     return (
         <>
@@ -149,16 +173,16 @@ const NewExchange = () => {
                                     <Grid item xs={6} sm={6}>
                                         <TextField
                                             name="year"
-                                            required
-                                            fullWidth
                                             id="year"
                                             label="Año"
+                                            required
+                                            fullWidth
                                             autoFocus
-                                            error={isNameEmpty}
-                                            helperText={isNameEmpty ? 'Este campo es requerido' : ''}
+                                            error={isYearEmpty}
+                                            helperText={isYearEmpty ? 'Este campo es requerido' : ''}
                                             onChange={(e) => {
-                                                setUniversity({...university, name: e.target.value});
-                                                setIsNameEmpty(false);
+                                                setExchange({...exchange, year: e.target.value});
+                                                setIsYearEmpty(false);
                                             }}
                                         />
                                     </Grid>
@@ -169,7 +193,12 @@ const NewExchange = () => {
                                             id="semester"
                                             label="Semestre"
                                             name="semester"
-                                            onChange={(e) => setUniversity({...university, short_name: e.target.value})}
+                                            error={isSemesterEmpty}
+                                            helperText={isSemesterEmpty ? 'Este campo es requerido' : ''}
+                                            onChange={(e) => {
+                                                setExchange({...exchange, semester: e.target.value});
+                                                setIsSemesterEmpty(false);
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={9} sm={9}>
@@ -179,15 +208,24 @@ const NewExchange = () => {
                                             id="student"
                                             label="Carné del Estudiante"
                                             name="student"
-                                            onChange={(e) => setUniversity({...university, short_name: e.target.value})}
+                                            error={isStudentEmpty}
+                                            helperText={isStudentEmpty ? 'Este campo es requerido' : ''}
+                                            onChange={(e) => {
+                                                setExchange({...exchange, student: e.target.value});
+                                                setIsStudentEmpty(false);
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={3} sm={3}>
                                         <Button
                                             variant={"contained"}
                                             fullWidth
+                                            required
                                             sx={{
                                                 height: '100%',
+                                            }}
+                                            onClick={() => {
+                                                handleCheckStudent(exchange.student);
                                             }}
                                         >
                                             Verificar
@@ -196,9 +234,22 @@ const NewExchange = () => {
                                     <Grid item xs={12} sm={12}>
                                         <Autocomplete
                                             disablePortal
+                                            required
+                                            fullWidth
                                             id="university"
+                                            name="university"
                                             options={universities}
-                                            renderInput={(params) => <TextField {...params} label="Universidad" />}
+                                            renderInput={(params) =>
+                                                <TextField {...params}
+                                                           label="Universidad"
+                                                           error={isUniversityEmpty}
+                                                           helperText={isUniversityEmpty ? 'Este campo es requerido' : ''}
+                                                />
+                                            }
+                                            onChange={(event, value) => {
+                                                setExchange({...exchange, university: value});
+                                                setIsUniversityEmpty(false);
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={12}>
@@ -207,9 +258,11 @@ const NewExchange = () => {
                                             <Select
                                                 labelId="modalities-label"
                                                 id="modalities"
-                                                value={modality}
+                                                value={exchange.modality}
                                                 label="Age"
-                                                onChange={handleModalityChange}
+                                                onChange={(e) => {
+                                                    setExchange({...exchange, modality: e.target.value});
+                                                }}
                                             >
                                                 {modalities.map((modality) => (
                                                     <MenuItem key={modality.id} value={modality.id}>
@@ -225,9 +278,11 @@ const NewExchange = () => {
                                             <Select
                                                 labelId="states-label"
                                                 id="states"
-                                                value={state}
+                                                value={exchange.state}
                                                 label="Estado"
-                                                onChange={handleStateChange}
+                                                onChange={(e) => {
+                                                    setExchange({...exchange, state: e.target.value});
+                                                }}
                                             >
                                                 {states.map((state) => (
                                                     <MenuItem key={state.id} value={state.id}>
@@ -240,53 +295,44 @@ const NewExchange = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             name="cycle"
-                                            required
                                             fullWidth
                                             id="cycle"
                                             label="Ciclo"
-                                            autoFocus
-                                            error={isNameEmpty}
-                                            helperText={isNameEmpty ? 'Este campo es requerido' : ''}
                                             onChange={(e) => {
-                                                setUniversity({...university, name: e.target.value});
-                                                setIsNameEmpty(false);
+                                                setExchange({...exchange, cycle: e.target.value});
                                             }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             name="date"
-                                            required
                                             fullWidth
                                             id="date"
                                             label="Fecha Viaje"
-                                            autoFocus
-                                            error={isNameEmpty}
-                                            helperText={isNameEmpty ? 'Este campo es requerido' : ''}
                                             onChange={(e) => {
-                                                setUniversity({...university, name: e.target.value});
-                                                setIsNameEmpty(false);
+                                                setExchange({...exchange, date: e.target.value});
                                             }}
                                         />
                                     </Grid>
                                     <Grid item xs={6} sm={6}>
                                         <TextField
                                             fullWidth
-                                            required
                                             id="courses_uvg"
                                             label="Cursos UVG"
                                             name="courses_uvg"
-                                            onChange={(e) => setUniversity({...university, short_name: e.target.value})}
+                                            onChange={(e) => setExchange({...exchange, courses_uvg: e.target.value})}
                                         />
                                     </Grid>
                                     <Grid item xs={6} sm={6}>
                                         <TextField
                                             fullWidth
-                                            required
                                             id="courses_exchange"
                                             label="Cursos Intercambio"
                                             name="courses_exchange"
-                                            onChange={(e) => setUniversity({...university, short_name: e.target.value})}
+                                            onChange={(e) => setExchange({
+                                                ...exchange,
+                                                courses_exchange: e.target.value
+                                            })}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={12}>
@@ -298,6 +344,7 @@ const NewExchange = () => {
                                             fullWidth
                                             rows={4}
                                             defaultValue=""
+                                            onChange={(e) => setExchange({...exchange, comments: e.target.value})}
                                         />
                                     </Grid>
                                 </Grid>
