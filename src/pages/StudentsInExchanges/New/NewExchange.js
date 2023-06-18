@@ -16,7 +16,9 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import {Autocomplete, FormControl, InputLabel, Select} from "@mui/material";
 import {getUniversities} from "../../../supabase/UniversitiesQueries";
+import {doesStudentExist} from "../../../supabase/StudentQueries";
 import {getModalities, getStates} from "../../../supabase/MiscellaneousQueries";
+import {insertStudentInExchange} from "../../../supabase/ExchangeQueries";
 
 
 const NewExchange = () => {
@@ -98,9 +100,9 @@ const NewExchange = () => {
         const year = data.get('year');
         const semester = data.get('semester');
         const student = data.get('student');
-        const university = data.get('university');
-        const modality = data.get('modality');
-        const state = data.get('state');
+        const university = exchange.university.id;
+        const modality = exchange.modality;
+        const state = exchange.state;
         const cycle = data.get('cycle');
         const date = data.get('date');
         const coursesUvg = data.get('coursesUvg');
@@ -116,28 +118,60 @@ const NewExchange = () => {
         if (student === '') {
             setIsStudentEmpty(true);
         }
-        if (university === null) {
+        if (university === '') {
             setIsUniversityEmpty(true);
         }
 
-        console.log({
-            year,
-            semester,
-            student,
-            university,
-            modality,
-            state,
-            cycle,
-            date,
-            coursesUvg,
-            coursesExchange,
-            comments,
-        });
-
-        if (year === '' || semester === '' || student === '' || university === null) {
+        if (year === '' || semester === '' || student === '' || university === '') {
             return;
         }
+
+        const studentExists = await doesStudentExist(student);
+        if (!studentExists) {
+            setIsStudentEmpty(true);
+            throw new Error("El estudiante no existe");
+        }
+
+        const exchangeData = {
+            year,
+            semester,
+            studentId: student,
+            universityId: university,
+        };
+
+        if (modality !== '') {
+            exchangeData.modality = modality;
+        }
+        if (state !== '') {
+            exchangeData.state = state;
+        }
+        if (cycle !== '') {
+            exchangeData.cycle = cycle;
+        }
+        if (date !== '') {
+            exchangeData.date = date;
+        }
+        if (coursesUvg !== '') {
+            exchangeData.coursesUvg = coursesUvg;
+        }
+        if (coursesExchange !== '') {
+            exchangeData.coursesExchange = coursesExchange;
+        }
+        if (comments !== '') {
+            exchangeData.comments = comments;
+        }
+
+        insertStudentInExchange(exchangeData)
+            .then(() => {
+                alert("Intercambio registrado exitosamente");
+                navigate('/estudiantes-de-intercambio');
+            })
+            .catch((error) => {
+                setErrorOccurred(true);
+                setError(error);
+            });
     };
+
 
     return (
         <>
@@ -259,7 +293,7 @@ const NewExchange = () => {
                                                 labelId="modalities-label"
                                                 id="modalities"
                                                 value={exchange.modality}
-                                                label="Age"
+                                                label="modalities"
                                                 onChange={(e) => {
                                                     setExchange({...exchange, modality: e.target.value});
                                                 }}
@@ -317,18 +351,18 @@ const NewExchange = () => {
                                     <Grid item xs={6} sm={6}>
                                         <TextField
                                             fullWidth
-                                            id="courses_uvg"
+                                            id="coursesUvg"
                                             label="Cursos UVG"
-                                            name="courses_uvg"
+                                            name="coursesUvg"
                                             onChange={(e) => setExchange({...exchange, courses_uvg: e.target.value})}
                                         />
                                     </Grid>
                                     <Grid item xs={6} sm={6}>
                                         <TextField
                                             fullWidth
-                                            id="courses_exchange"
+                                            id="coursesExchange"
                                             label="Cursos Intercambio"
-                                            name="courses_exchange"
+                                            name="coursesExchange"
                                             onChange={(e) => setExchange({
                                                 ...exchange,
                                                 courses_exchange: e.target.value

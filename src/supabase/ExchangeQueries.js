@@ -34,31 +34,68 @@ const getStudentsInExchanges = async () => {
     if (error) {
         throw error;
     } else {
-        console.log(data)
         return data.map((student) => {
             return {
                 id: student.id,
                 year: student.anio,
                 semester: student.semestre,
-                student: student.estudiantes.nombre,
-                student_id: student.estudiantes.id,
-                modality: student.modalidades.modalidad,
-                modality_id: student.modalidades.id,
-                cycle: student.ciclo,
-                university: student.universidades.nombre,
-                university_id: student.universidades.id,
-                state: student.estados.estado,
-                state_id: student.estados.id,
-                date: student.fecha_viaje,
-                assignation: student.asignacion,
-                coursesUvg: student.cursos_uvg,
-                coursesExchange: student.cursos_intercambio,
-                comments: student.comentarios,
+                student: student.estudiantes?.nombre,
+                student_id: student.estudiantes?.id ?? '',
+                modality: student.modalidades?.modalidad ?? '',
+                modality_id: student.modalidades?.id ?? '',
+                cycle: student.ciclo ?? '',
+                university: student.universidades?.nombre ?? '',
+                university_id: student.universidades?.id ?? '',
+                state: student.estados?.estado ?? '',
+                state_id: student.estados?.id ?? '',
+                date: student.fecha_viaje ?? '',
+                assignation: student.asignacion ?? '',
+                coursesUvg: student.cursos_uvg ?? '',
+                coursesExchange: student.cursos_intercambio ?? '',
+                comments: student.comentarios ?? '',
             }
         });
+    }
+};
+
+
+const insertStudentInExchange = async ({
+                                           year,
+                                           semester,
+                                           studentId,
+                                           universityId,
+                                           modalityId = null,
+                                           stateId = null,
+                                           cycle = null,
+                                           date = null,
+                                           coursesUvg = null,
+                                           coursesExchange = null,
+                                           comments = null
+                                       }) => {
+    const {error} = await supabase
+        .from('intercambios')
+        .insert([
+            {
+                anio: year,
+                semestre: semester,
+                id_estudiante: studentId,
+                id_universidad: universityId,
+                id_modalidad: modalityId,
+                id_estado: stateId,
+                ciclo: cycle,
+                fecha_viaje: date,
+                cursos_uvg: coursesUvg,
+                cursos_intercambio: coursesExchange,
+                comentarios: comments,
+            }
+        ]);
+
+    if (error) {
+        throw error;
     }
 }
 
 export {
+    insertStudentInExchange,
     getStudentsInExchanges,
 }
