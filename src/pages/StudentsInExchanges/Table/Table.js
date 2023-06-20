@@ -1,28 +1,43 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {DataGrid, GridToolbar} from '@mui/x-data-grid';
-import {getUniversities} from "../../../supabase/UniversitiesQueries";
+import {DataGrid, GridActionsCellItem, GridToolbar} from '@mui/x-data-grid';
 import LinearProgress from '@mui/material/LinearProgress';
 import "./Table.scss";
-import {RenderButton, RenderEdit} from "../../../components/Buttons/TableButtons";
 import {getStudentsInExchanges} from "../../../supabase/ExchangeQueries";
+import EditIcon from '@mui/icons-material/Edit';
 
 const columns = [
+    {
+        field: 'actions',
+        type: 'actions',
+        width: 20,
+        getActions: (params) => [
+            <GridActionsCellItem
+                icon={<EditIcon/>}
+                label="Editar"
+                onClick={() => {
+                    window.location.href = `/estudiantes-de-intercambio/edit/${params.id}`;
+                }}
+            />,
+        ],
+    },
     {
         field: 'year',
         headerName: 'Año',
         width: 60,
-        type: 'number'},
+        type: 'number',
+    },
     {
         field: 'semester',
         headerName: 'Semestre',
         width: 80,
-        type: 'number'},
+        type: 'number',
+    },
     {
         field: 'student',
         headerName: 'Estudiante',
-        width: 200}
-    ,
+        width: 200,
+    },
     {
         field: 'modality',
         headerName: 'Modalidad',
@@ -76,7 +91,6 @@ export default function Table() {
     useEffect(() => {
         getStudentsInExchanges()
             .then((data) => {
-                console.log('Students in exchanges:', data)
                 setRows(data);
             })
             .catch((error) => {
