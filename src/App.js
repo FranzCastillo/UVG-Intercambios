@@ -8,7 +8,7 @@ import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
 import Profile from "./pages/Profile/Profile";
 import NavBar from "./components/NavBar/NavBar";
-import StudentsInExchanges from "./pages/StudentsInExchanges/StudentsInExchanges";
+import StudentsInExchanges from "./pages/StudentsInExchanges/Page/StudentsInExchanges";
 import Students from "./pages/Students/Students/Students";
 import Universities from "./pages/Universities/Universities/Universities";
 import UniversityDetails from "./pages/Universities/Details/Details";
@@ -18,6 +18,9 @@ import EditUniversity from "./pages/Universities/Edit/Edit";
 import NewStudent from "./pages/Students/New/NewStudent";
 import StudentDetails from "./pages/Students/Details/StudentDetails";
 import EditStudent from "./pages/Students/Edit/EditStudent";
+import NewExchange from "./pages/StudentsInExchanges/New/NewExchange";
+import EditExchange from "./pages/StudentsInExchanges/Edit/EditExchange";
+import ExchangeDetails from "./pages/StudentsInExchanges/Details/ExchangeDetails";
 
 const App = () => {
     const [session, setSession] = useState(null)
@@ -46,7 +49,11 @@ const App = () => {
                             <Route path="/" element={<Home/>}/>
                             <Route path="/home" element={<Home/>}/>
                             <Route path="/profile" element={<Profile/>}/>
+                            {/*INTERCAMBIOS*/}
                             <Route path="/estudiantes-de-intercambio" element={<StudentsInExchanges/>}/>
+                            <Route path="/estudiantes-de-intercambio/new" element={<NewExchange/>}/>
+                            <Route path="/estudiantes-de-intercambio/edit/:id" element={<EditExchange/>}/>
+                            <Route path="/estudiantes-de-intercambio/:id" element={<ExchangeDetails/>}/>
                             {/*STUDENTS*/}
                             <Route path="/estudiantes" element={<Students/>}/>
                             <Route path="/estudiantes/:id" element={<StudentDetails/>}/>
