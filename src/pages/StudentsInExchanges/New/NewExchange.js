@@ -126,7 +126,11 @@ const NewExchange = () => {
         const studentExists = await doesStudentExist(student);
         if (!studentExists) {
             setIsStudentEmpty(true);
-            throw new Error("El estudiante no existe");
+            setError({
+                message: "El estudiante no existe"
+            })
+            setErrorOccurred(true);
+            return;
         }
 
         const exchangeData = {
@@ -137,10 +141,10 @@ const NewExchange = () => {
         };
 
         if (modality !== '') {
-            exchangeData.modality = modality;
+            exchangeData.modalityId = modality;
         }
         if (state !== '') {
-            exchangeData.state = state;
+            exchangeData.stateId = state;
         }
         if (cycle !== '') {
             exchangeData.cycle = cycle;

@@ -25,7 +25,6 @@ const getStudentsInExchanges = async () => {
                 estado
             ),
             fecha_viaje,
-            asignacion,
             cursos_uvg,
             cursos_intercambio,
             comentarios
@@ -49,7 +48,6 @@ const getStudentsInExchanges = async () => {
                 state: student.estados?.estado ?? '',
                 state_id: student.estados?.id ?? '',
                 date: student.fecha_viaje ?? '',
-                assignation: student.asignacion ?? '',
                 coursesUvg: student.cursos_uvg ?? '',
                 coursesExchange: student.cursos_intercambio ?? '',
                 comments: student.comentarios ?? '',
@@ -120,7 +118,6 @@ const getExchangeById = async (id) => {
                 estado
             ),
             fecha_viaje,
-            asignacion,
             cursos_uvg,
             cursos_intercambio,
             comentarios
@@ -146,7 +143,6 @@ const getExchangeById = async (id) => {
             state: student.estados?.estado ?? '',
             state_id: student.estados?.id ?? '',
             date: student.fecha_viaje ?? '',
-            assignation: student.asignacion ?? '',
             coursesUvg: student.cursos_uvg ?? '',
             coursesExchange: student.cursos_intercambio ?? '',
             comments: student.comentarios ?? '',

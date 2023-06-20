@@ -64,11 +64,6 @@ const columns = [
         width: 130,
     },
     {
-        field: 'assignation',
-        headerName: 'Asignación',
-        width: 100,
-    },
-    {
         field: 'coursesUvg',
         headerName: 'Cursos UVG',
         width: 100,
