@@ -74,9 +74,6 @@ const NewExchange = () => {
                 setErrorOccurred(true);
                 setError(error);
             })
-            .finally(() => {
-                setLoading(false);
-            });
     }, []);
 
     useEffect(() => {
