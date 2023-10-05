@@ -18,7 +18,7 @@ import Logo from '../../assets/images/logo.png';
 import {useNavigate} from "react-router-dom";
 import {supabase} from "../../supabase/client";
 
-const pages = ['Inicio', 'Estudiantes de Intercambio', 'Estudiantes', 'Universidades',  'Resumen',];
+const pages = ['Estudiantes de Intercambio', 'Estudiantes', 'Universidades',  'Resumen',];
 const settings = ['Perfil', 'Cerrar Sesión',];
 
 function NavBar() {
@@ -68,9 +68,9 @@ function NavBar() {
         }
     };
 
-    const handleHome = () => {
-        navigate("/");
-    }
+    // const handleHome = () => {
+    //     navigate("/");
+    // }
 
     const handleStudentsInExchanges = () => {
         navigate("/estudiantes-de-intercambio");
@@ -90,8 +90,6 @@ function NavBar() {
 
     const handleMenuClick = (page) => {
         switch (page) {
-            case 'Inicio':
-                return handleHome;
             case 'Estudiantes de Intercambio':
                 return handleStudentsInExchanges;
             case 'Estudiantes':
