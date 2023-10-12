@@ -1,12 +1,25 @@
 import Button from "@mui/material/Button";
 import React from "react";
+import Swal from 'sweetalert2'
 import {getStudentById} from "../../supabase/StudentQueries";
 
-const handleCheckStudent = (studentId) => {
-    getStudentById(studentId).then((student) => {
-        console.log(`Estudiante encontrado: ${JSON.stringify(student)}`);
+const handleCheckStudent = async (studentId) => {
+    await getStudentById(studentId).then((student) => {
+        Swal.fire({
+            position: 'center',
+            icon: 'info',
+            title: `${student.id}: ${student.name}`,
+            showConfirmButton: false,
+            timer: 1500
+        })
     }).catch((error) => {
-        console.log(`Error: ${error.message}`);
+        Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: `${error.message}`,
+            showConfirmButton: false,
+            timer: 1500
+        })
     });
 }
 

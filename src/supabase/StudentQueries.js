@@ -26,6 +26,10 @@ const doesStudentExist = async (id) => {
 }
 
 const getStudentById = async (id) => {
+    const intRegex = /^\d+$/;
+    if (!intRegex.test(id)) {
+        throw new Error(`'${id}' no es un carné válido`);
+    }
     const {data, error} = await supabase
         .from('estudiantes')
         .select(`
