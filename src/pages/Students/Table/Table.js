@@ -28,14 +28,14 @@ const columns = [
         headerName: 'Género',
         width: 100,
     },
-    {
-        field: 'redirect',
-        headerName: 'Más Información',
-        renderCell: (params) => <RenderButton path={"estudiantes"} id={params.row.id}/>,
-        width: 150,
-        sortable: false,
-        filterable: false,
-    },
+    // {
+    //     field: 'redirect',
+    //     headerName: 'Más Información',
+    //     renderCell: (params) => <RenderButton path={"estudiantes"} id={params.row.id}/>,
+    //     width: 150,
+    //     sortable: false,
+    //     filterable: false,
+    // },
     {
         field: 'edit',
         headerName: 'Editar',

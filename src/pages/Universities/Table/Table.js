@@ -10,14 +10,14 @@ const columns = [
     {field: 'name', headerName: 'Nombre', width: 350},
     {field: 'short_name', headerName: 'Nombre Corto', width: 200},
     {field: 'country', headerName: 'País', width: 300},
-    {
-        field: 'redirect',
-        headerName: 'Más Información',
-        renderCell: (params) => <RenderButton path={"universidades"} id={params.row.id}/>,
-        width: 150,
-        sortable: false,
-        filterable: false,
-    },
+    // {
+    //     field: 'redirect',
+    //     headerName: 'Más Información',
+    //     renderCell: (params) => <RenderButton path={"universidades"} id={params.row.id}/>,
+    //     width: 150,
+    //     sortable: false,
+    //     filterable: false,
+    // },
     {
         field: 'edit',
         headerName: 'Editar',
