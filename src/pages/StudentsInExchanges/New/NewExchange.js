@@ -19,6 +19,7 @@ import {getUniversities} from "../../../supabase/UniversitiesQueries";
 import {doesStudentExist} from "../../../supabase/StudentQueries";
 import {getModalities, getStates} from "../../../supabase/MiscellaneousQueries";
 import {insertStudentInExchange} from "../../../supabase/ExchangeQueries";
+import CheckStudentButton from "../../../components/Buttons/CheckStudent";
 
 
 const NewExchange = () => {
@@ -86,10 +87,6 @@ const NewExchange = () => {
     const [isSemesterEmpty, setIsSemesterEmpty] = useState(false);
     const [isStudentEmpty, setIsStudentEmpty] = useState(false);
     const [isUniversityEmpty, setIsUniversityEmpty] = useState(false);
-
-    const handleCheckStudent = (studentId) => {
-        console.log(studentId);
-    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -252,19 +249,9 @@ const NewExchange = () => {
                                         />
                                     </Grid>
                                     <Grid item xs={3} sm={3}>
-                                        <Button
-                                            variant={"contained"}
-                                            fullWidth
-                                            required
-                                            sx={{
-                                                height: '100%',
-                                            }}
-                                            onClick={() => {
-                                                handleCheckStudent(exchange.student);
-                                            }}
-                                        >
-                                            Verificar
-                                        </Button>
+                                        <CheckStudentButton
+                                            studentId={exchange.student}
+                                        />
                                     </Grid>
                                     <Grid item xs={12} sm={12}>
                                         <Autocomplete

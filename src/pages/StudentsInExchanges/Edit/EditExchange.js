@@ -19,6 +19,7 @@ import {getUniversities} from "../../../supabase/UniversitiesQueries";
 import {getModalities, getStates} from "../../../supabase/MiscellaneousQueries";
 import {getExchangeById, updateExchange} from "../../../supabase/ExchangeQueries";
 import {doesStudentExist} from "../../../supabase/StudentQueries";
+import CheckStudentButton from "../../../components/Buttons/CheckStudent";
 
 
 const EditExchange = () => {
@@ -267,19 +268,9 @@ const EditExchange = () => {
                                         />
                                     </Grid>
                                     <Grid item xs={3} sm={3}>
-                                        <Button
-                                            variant={"contained"}
-                                            fullWidth
-                                            required
-                                            sx={{
-                                                height: '100%',
-                                            }}
-                                            onClick={() => {
-                                                handleCheckStudent(exchange.student);
-                                            }}
-                                        >
-                                            Verificar
-                                        </Button>
+                                        <CheckStudentButton
+                                            studentId={exchange.student_id}
+                                        />
                                     </Grid>
                                     <Grid item xs={12} sm={12}>
                                         <Autocomplete
