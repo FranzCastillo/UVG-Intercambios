@@ -28,16 +28,15 @@ export default function SignUp() {
     const [isNameFilled, setIsNameFilled] = useState(true);
     const [isLastNameFilled, setIsLastNameFilled] = useState(true);
     const [isEmailFilled, setIsEmailFilled] = useState(true);
-    const [showPassword, setshowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [passwordsMatch, setPasswordsMatch] = useState(true);
 
     const helper = "Este campo es obligatorio";
     const navigate = useNavigate();
 
-    const handleClickShowPassword = () => setshowPassword((show) => !show);
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
-
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
@@ -171,7 +170,7 @@ export default function SignUp() {
                                             </InputAdornment>
                                         }
                                         label="Contraseña"
-                                        {...(passwordsMatch ? {} : {error: true})}
+                                        error={!passwordsMatch || !isPasswordLengthValid}
                                     />
                                 </FormControl>
                             </Grid>
@@ -199,12 +198,13 @@ export default function SignUp() {
                                             </InputAdornment>
                                         }
                                         label="Confirmar Contraseña"
-                                        {...(passwordsMatch ? {} : {error: true})}
+                                        error={!passwordsMatch || !isPasswordLengthValid}
                                     />
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12}>
                                 <Typography variant="caption" color="error">
+                                    {!isPasswordLengthValid && "La contraseña debe tener al menos 6 caracteres\t"}
                                     {!passwordsMatch && "Las contraseñas no coinciden"}
                                 </Typography>
                             </Grid>

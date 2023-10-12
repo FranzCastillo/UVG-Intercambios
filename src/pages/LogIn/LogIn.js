@@ -14,15 +14,24 @@ import './LogIn.scss';
 import {useState} from "react";
 import {supabase} from "../../supabase/client";
 import {useNavigate} from "react-router-dom";
+import {FormControl, InputAdornment, InputLabel, OutlinedInput} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import {Visibility, VisibilityOff} from "@mui/icons-material";
 
 export default function LogIn() {
     const [isEmailFilled, setIsEmailFilled] = useState(true);
     const [invalidLogin, setInvalidLogin] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const requiredHelper = "Este campo es obligatorio";
     const invalidHelper = "Su correo institucional o su contraseña son incorrectos";
 
     const navigate = useNavigate();
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
     const logIn = async (email, password) => {
         const { error } = await supabase.auth.signInWithPassword({
@@ -33,7 +42,7 @@ export default function LogIn() {
             console.log(error);
             setInvalidLogin(true);
         } else {
-            navigate('/home');
+            navigate('/');
         }
     }
 
@@ -86,17 +95,37 @@ export default function LogIn() {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField
+                                <FormControl
+                                    sx={{width: '100%'}}
+                                    variant="outlined"
                                     required
-                                    fullWidth
-                                    name="password"
-                                    label="Contraseña"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="new-password"
-                                    error={invalidLogin}
-                                    helperText={invalidLogin ? invalidHelper : ""}
-                                />
+                                >
+                                    <InputLabel htmlFor="password">Contraseña</InputLabel>
+                                    <OutlinedInput
+                                        id="password"
+                                        name={"password"}
+                                        type={showPassword ? 'text' : 'password'}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="Cambiar visibilidad de contraseña"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                        label="Contraseña"
+                                        error={invalidLogin}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Typography variant="caption" color="error">
+                                    {invalidLogin && "Las credenciales son incorrectas"}
+                                </Typography>
                             </Grid>
                         </Grid>
                         <Button
