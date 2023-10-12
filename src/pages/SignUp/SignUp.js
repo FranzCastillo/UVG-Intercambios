@@ -17,6 +17,9 @@ import {isWhitelisted} from "../../supabase/AccountsQueries";
 import NotAllowedAlert from "../../components/Alerts/NotAllowedAlert";
 import UserAlreadyExistsAlert from "../../components/Alerts/UserAlreadyExistsAlert";
 import {useNavigate} from "react-router-dom";
+import {FormControl, InputAdornment, InputLabel, OutlinedInput} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import {Visibility, VisibilityOff} from "@mui/icons-material";
 
 export default function SignUp() {
     const [userAlreadyExists, setUserAlreadyExists] = useState(false);
@@ -25,9 +28,19 @@ export default function SignUp() {
     const [isNameFilled, setIsNameFilled] = useState(true);
     const [isLastNameFilled, setIsLastNameFilled] = useState(true);
     const [isEmailFilled, setIsEmailFilled] = useState(true);
-    const helper = "Este campo es obligatorio";
+    const [showPassword, setshowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
 
+    const helper = "Este campo es obligatorio";
     const navigate = useNavigate();
+
+    const handleClickShowPassword = () => setshowPassword((show) => !show);
+    const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
     const signUp = async (email, password, name, lastName) => {
         const { error} = await supabase.auth.signUp({
@@ -48,6 +61,7 @@ export default function SignUp() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const password = data.get('password');
+        const confirmPassword = data.get('confirmPassword');
         const email = data.get('email');
         const name = data.get('name');
         const lastName = data.get('lastName');
@@ -56,8 +70,15 @@ export default function SignUp() {
         setIsNameFilled(name.length > 0);
         setIsLastNameFilled(lastName.length > 0);
         setIsEmailFilled(email.length > 0);
+        setPasswordsMatch(password === confirmPassword);
 
-        if (password.length >= 6 && name.length > 0 && lastName.length > 0 && email.length > 0) {
+        // Checked again due to the async nature of the validations
+        if (password.length >= 6
+            && name.length > 0
+            && lastName.length > 0
+            && email.length > 0
+            && password === confirmPassword
+        ){
             const whiteListed = await isWhitelisted(email);
             try{
                 if (whiteListed) {
@@ -127,19 +148,65 @@ export default function SignUp() {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField
+                                <FormControl
+                                    sx={{width: '100%'}}
+                                    variant="outlined"
                                     required
-                                    fullWidth
-                                    {...(isPasswordLengthValid ? {} : {
-                                        error: true,
-                                        helperText: "La contraseña debe tener al menos 6 caracteres"
-                                    })}
-                                    name="password"
-                                    label="Contraseña"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="new-password"
-                                />
+                                >
+                                    <InputLabel htmlFor="password">Contraseña</InputLabel>
+                                    <OutlinedInput
+                                        id="password"
+                                        name={"password"}
+                                        type={showPassword ? 'text' : 'password'}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="Cambiar visibilidad de contraseña"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                        label="Contraseña"
+                                        {...(passwordsMatch ? {} : {error: true})}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl
+                                    sx={{width: '100%'}}
+                                    variant="outlined"
+                                    required
+                                >
+                                    <InputLabel htmlFor="password">Confirmar Contraseña</InputLabel>
+                                    <OutlinedInput
+                                        id="confirmPassword"
+                                        name={"confirmPassword"}
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="Cambiar visibilidad de contraseña"
+                                                    onClick={handleClickShowConfirmPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                        label="Confirmar Contraseña"
+                                        {...(passwordsMatch ? {} : {error: true})}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Typography variant="caption" color="error">
+                                    {!passwordsMatch && "Las contraseñas no coinciden"}
+                                </Typography>
                             </Grid>
                         </Grid>
                         <Button
