@@ -62,7 +62,7 @@ export default function SignUp() {
             try{
                 if (whiteListed) {
                     await signUp(email, password, name, lastName);
-                    navigate('/home');
+                    navigate('/');
                 } else {
                     setIsWhitelistedUser(false);
                 }
@@ -153,7 +153,7 @@ export default function SignUp() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href={'./log-in'} variant="body2">
+                                <Link href={'./'} variant="body2">
                                     ¿Ya has creado tu usuario? Inicia Sesión
                                 </Link>
                             </Grid>
