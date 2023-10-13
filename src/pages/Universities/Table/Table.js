@@ -4,7 +4,6 @@ import {DataGrid, GridActionsCellItem, GridToolbar} from '@mui/x-data-grid';
 import {getUniversities, deleteUniversity} from "../../../supabase/UniversitiesQueries";
 import LinearProgress from '@mui/material/LinearProgress';
 import "./Table.scss";
-import {RenderButton, RenderEdit} from "../../../components/Buttons/TableButtons";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Swal from 'sweetalert2'

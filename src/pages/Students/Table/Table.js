@@ -1,11 +1,39 @@
 import * as React from 'react';
-import { DataGrid, GridToolbar  } from '@mui/x-data-grid';
-import {RenderButton, RenderEdit} from "../../../components/Buttons/TableButtons";
+import {DataGrid, GridActionsCellItem, GridToolbar} from '@mui/x-data-grid';
 import {getStudents} from "../../../supabase/StudentQueries";
 import {useEffect, useState} from "react";
 import LinearProgress from "@mui/material/LinearProgress";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+const handleDelete = (id) => {
+    alert(`Deleting student with id ${id}`);
+}
 
 const columns = [
+    {
+        field: 'actions',
+        type: 'actions',
+        width: 20,
+        getActions: (params) => [
+            <GridActionsCellItem
+                icon={<EditIcon/>}
+                label="Editar"
+                onClick={() => {
+                    window.location.href = `/estudiantes/edit/${params.id}`;
+                }}
+                showInMenu
+            />,
+            <GridActionsCellItem
+                icon={<DeleteIcon/>}
+                label="Eliminar"
+                onClick={() => {
+                    handleDelete(params.id)
+                }}
+                showInMenu
+            />,
+        ],
+    },
     { field: 'id', headerName: 'Carné', width: 100},
     { field: 'name', headerName: 'Nombre', width: 300 },
     {
@@ -27,22 +55,6 @@ const columns = [
         field: 'gender',
         headerName: 'Género',
         width: 100,
-    },
-    // {
-    //     field: 'redirect',
-    //     headerName: 'Más Información',
-    //     renderCell: (params) => <RenderButton path={"estudiantes"} id={params.row.id}/>,
-    //     width: 150,
-    //     sortable: false,
-    //     filterable: false,
-    // },
-    {
-        field: 'edit',
-        headerName: 'Editar',
-        renderCell: (params) => <RenderEdit path={"estudiantes"} id={params.row.id}/>,
-        width: 150,
-        sortable: false,
-        filterable: false,
     },
 ];
 

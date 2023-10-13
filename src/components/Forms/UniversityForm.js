@@ -76,6 +76,7 @@ const UniversityForm = ({id = -1}) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setFirstTry(false);
         if (university.name !== '' && university.countryId !== '') {
             try {
                 const doesExist = await doesUniversityExist(university.name);
