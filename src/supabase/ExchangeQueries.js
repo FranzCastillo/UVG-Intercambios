@@ -188,9 +188,21 @@ const updateExchange = async ({
     }
 }
 
+const deleteExchange = async (id) => {
+    const {error} = await supabase
+        .from('intercambios')
+        .delete()
+        .eq('id', id);
+
+    if (error) {
+        throw error;
+    }
+}
+
 export {
     updateExchange,
     getExchangeById,
     insertStudentInExchange,
     getStudentsInExchanges,
+    deleteExchange
 }

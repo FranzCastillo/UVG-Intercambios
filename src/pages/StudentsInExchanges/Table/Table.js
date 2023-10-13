@@ -3,8 +3,47 @@ import {useEffect, useState} from 'react';
 import {DataGrid, GridActionsCellItem, GridToolbar} from '@mui/x-data-grid';
 import LinearProgress from '@mui/material/LinearProgress';
 import "./Table.scss";
-import {getStudentsInExchanges} from "../../../supabase/ExchangeQueries";
+import {getStudentsInExchanges, deleteExchange} from "../../../supabase/ExchangeQueries";
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Swal from 'sweetalert2'
+
+
+const handleDelete = (id) => {
+    Swal.fire({
+        title: '¿Estás seguro que quieres elimnarlo?',
+        text: "Esta acción es irreversible",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, eliminar',
+        cancelButtonText: "Cancelar",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deleteExchange(id).then(() => {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Intercambio eliminado',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            }).catch((error) => {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: `${error.message}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+        }
+    })
+}
 
 const columns = [
     {
@@ -18,6 +57,15 @@ const columns = [
                 onClick={() => {
                     window.location.href = `/estudiantes-de-intercambio/edit/${params.id}`;
                 }}
+                showInMenu
+            />,
+            <GridActionsCellItem
+                icon={<DeleteIcon/>}
+                label="Eliminar"
+                onClick={() => {
+                    handleDelete(params.id)
+                }}
+                showInMenu
             />,
         ],
     },
