@@ -111,10 +111,22 @@ const doesUniversityExist = async (name) => {
     }
 }
 
+const deleteUniversity = async (id) => {
+    const {error} = await supabase
+        .from('universidades')
+        .delete()
+        .eq('id', id)
+
+    if (error) {
+        throw error;
+    }
+}
+
 export {
     getUniversities,
     getUniversityById,
     updateUniversity,
     insertUniversity,
     doesUniversityExist,
+    deleteUniversity
 };

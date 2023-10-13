@@ -1,31 +1,78 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {DataGrid, GridToolbar} from '@mui/x-data-grid';
-import {getUniversities} from "../../../supabase/UniversitiesQueries";
+import {DataGrid, GridActionsCellItem, GridToolbar} from '@mui/x-data-grid';
+import {getUniversities, deleteUniversity} from "../../../supabase/UniversitiesQueries";
 import LinearProgress from '@mui/material/LinearProgress';
 import "./Table.scss";
 import {RenderButton, RenderEdit} from "../../../components/Buttons/TableButtons";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Swal from 'sweetalert2'
+
+const handleDelete = (id) => {
+    Swal.fire({
+        title: '¿Estás seguro que quieres elimnarlo?',
+        text: "Esta acción es irreversible",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, eliminar',
+        cancelButtonText: "Cancelar",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deleteUniversity(id).then(() => {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Universidad Eliminada',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            }).catch((error) => {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: `${error.message}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+        }
+    })
+}
+
 
 const columns = [
+    {
+        field: 'actions',
+        type: 'actions',
+        width: 20,
+        getActions: (params) => [
+            <GridActionsCellItem
+                icon={<EditIcon/>}
+                label="Editar"
+                onClick={() => {
+                    window.location.href = `/universidades/edit/${params.id}`;
+                }}
+                showInMenu
+            />,
+            <GridActionsCellItem
+                icon={<DeleteIcon/>}
+                label="Eliminar"
+                onClick={() => {
+                    handleDelete(params.id)
+                }}
+                showInMenu
+            />,
+        ],
+    },
     {field: 'name', headerName: 'Nombre', width: 350},
     {field: 'short_name', headerName: 'Nombre Corto', width: 200},
     {field: 'country', headerName: 'País', width: 300},
-    // {
-    //     field: 'redirect',
-    //     headerName: 'Más Información',
-    //     renderCell: (params) => <RenderButton path={"universidades"} id={params.row.id}/>,
-    //     width: 150,
-    //     sortable: false,
-    //     filterable: false,
-    // },
-    {
-        field: 'edit',
-        headerName: 'Editar',
-        renderCell: (params) => <RenderEdit path={"universidades"} id={params.row.id}/>,
-        width: 150,
-        sortable: false,
-        filterable: false,
-    },
 ];
 
 export default function Table() {
