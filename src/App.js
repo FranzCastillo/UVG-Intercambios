@@ -4,23 +4,19 @@ import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import {supabase} from './supabase/client.js';
 import SignUp from "./pages/SignUp/SignUp";
 import LogIn from "./pages/LogIn/LogIn";
-import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
 import Profile from "./pages/Profile/Profile";
 import NavBar from "./components/NavBar/NavBar";
 import StudentsInExchanges from "./pages/StudentsInExchanges/Page/StudentsInExchanges";
 import Students from "./pages/Students/Students/Students";
 import Universities from "./pages/Universities/Universities/Universities";
-import UniversityDetails from "./pages/Universities/Details/Details";
 import NewUniversity from "./pages/Universities/New/NewUniversity";
 import Summary from "./pages/Summary/Summary";
 import EditUniversity from "./pages/Universities/Edit/Edit";
 import NewStudent from "./pages/Students/New/NewStudent";
-import StudentDetails from "./pages/Students/Details/StudentDetails";
 import EditStudent from "./pages/Students/Edit/EditStudent";
 import NewExchange from "./pages/StudentsInExchanges/New/NewExchange";
 import EditExchange from "./pages/StudentsInExchanges/Edit/EditExchange";
-import ExchangeDetails from "./pages/StudentsInExchanges/Details/ExchangeDetails";
 
 const App = () => {
     const [session, setSession] = useState(null)
@@ -53,17 +49,14 @@ const App = () => {
                             <Route path="/estudiantes-de-intercambio" element={<StudentsInExchanges/>}/>
                             <Route path="/estudiantes-de-intercambio/new" element={<NewExchange/>}/>
                             <Route path="/estudiantes-de-intercambio/edit/:id" element={<EditExchange/>}/>
-                            <Route path="/estudiantes-de-intercambio/:id" element={<ExchangeDetails/>}/>
                             {/*STUDENTS*/}
                             <Route path="/estudiantes" element={<Students/>}/>
-                            <Route path="/estudiantes/:id" element={<StudentDetails/>}/>
                             <Route path="/estudiantes/new" element={<NewStudent/>}/>
                             <Route path="/estudiantes/edit/:id" element={<EditStudent/>}/>
                             {/*UNIVERSITIES*/}
                             <Route path="/universidades" element={<Universities/>}/>
                             <Route path={"/universidades/new"} element={<NewUniversity/>}/>
                             <Route path={"/universidades/edit/:id"} element={<EditUniversity/>}/>
-                            <Route path={"/universidades/:id"} element={<UniversityDetails/>}/>
                             {/*STATISTICS*/}
                             <Route path="/resumen" element={<Summary/>}/>
                             <Route path="*" element={<NotFound/>}/>
