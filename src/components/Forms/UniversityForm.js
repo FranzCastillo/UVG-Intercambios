@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom';
-import {doesUniversityExist, insertUniversity, getUniversityById} from "../../supabase/UniversitiesQueries";
+import {doesUniversityExist, getUniversityById, insertUniversity} from "../../supabase/UniversitiesQueries";
 import {getCountriesList} from "../../supabase/GeoQueries";
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from "@mui/material/Typography";
@@ -83,7 +83,7 @@ const UniversityForm = ({id = -1}) => {
                 if (doesExist) {
                     throw new Error(`Ya existe una universidad con el nombre ${university.name}`);
                 } else {
-                    if(isNewUniversity){
+                    if (isNewUniversity) {
                         await insertUniversity({
                             name: university.name,
                             short_name: university.shortName,
@@ -99,7 +99,7 @@ const UniversityForm = ({id = -1}) => {
                         setTimeout(() => {
                             navigate('/universidades');
                         }, 1500);
-                    } else{
+                    } else {
 
                     }
                 }
@@ -150,7 +150,7 @@ const UniversityForm = ({id = -1}) => {
                                             label="Nombre de la Universidad"
                                             value={university.name}
                                             autoFocus
-                                            InputLabelProps={{ shrink: true }}
+                                            InputLabelProps={{shrink: true}}
                                             error={isNameEmpty}
                                             helperText={isNameEmpty ? 'Este campo es requerido' : ''}
                                             onChange={(e) => {
@@ -165,7 +165,7 @@ const UniversityForm = ({id = -1}) => {
                                             label="Nombre Corto"
                                             name="short_name"
                                             value={university.shortName}
-                                            InputLabelProps={{ shrink: true }}
+                                            InputLabelProps={{shrink: true}}
                                             onChange={(e) => setUniversity({...university, shortName: e.target.value})}
                                         />
                                     </Grid>

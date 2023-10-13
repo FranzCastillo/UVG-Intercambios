@@ -34,8 +34,8 @@ const columns = [
             />,
         ],
     },
-    { field: 'id', headerName: 'Carné', width: 100},
-    { field: 'name', headerName: 'Nombre', width: 300 },
+    {field: 'id', headerName: 'Carné', width: 100},
+    {field: 'name', headerName: 'Nombre', width: 300},
     {
         field: 'mail',
         headerName: 'Correo',

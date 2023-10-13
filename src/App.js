@@ -5,7 +5,6 @@ import {supabase} from './supabase/client.js';
 import SignUp from "./pages/SignUp/SignUp";
 import LogIn from "./pages/LogIn/LogIn";
 import NotFound from "./pages/NotFound/NotFound";
-import Profile from "./pages/Profile/Profile";
 import NavBar from "./components/NavBar/NavBar";
 import StudentsInExchanges from "./pages/StudentsInExchanges/Page/StudentsInExchanges";
 import Students from "./pages/Students/Students/Students";
@@ -43,8 +42,6 @@ const App = () => {
                         <NavBar/>
                         <Routes>
                             <Route path="/" element={<StudentsInExchanges/>}/>
-                            {/*<Route path="/home" element={<Home/>}/>*/}
-                            <Route path="/profile" element={<Profile/>}/>
                             {/*INTERCAMBIOS*/}
                             <Route path="/estudiantes-de-intercambio" element={<StudentsInExchanges/>}/>
                             <Route path="/estudiantes-de-intercambio/new" element={<NewExchange/>}/>

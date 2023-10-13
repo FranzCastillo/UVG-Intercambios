@@ -4,7 +4,7 @@ import {useParams} from "react-router-dom";
 
 const EditUniversity = () => {
     const {id} = useParams();
-    return(
+    return (
         <UniversityForm id={id}/>
     );
 };

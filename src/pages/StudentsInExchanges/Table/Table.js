@@ -2,7 +2,6 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {DataGrid, GridActionsCellItem, GridToolbar} from '@mui/x-data-grid';
 import LinearProgress from '@mui/material/LinearProgress';
-import "./Table.scss";
 import {getStudentsInExchanges, deleteExchange} from "../../../supabase/ExchangeQueries";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';

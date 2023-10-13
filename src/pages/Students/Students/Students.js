@@ -41,7 +41,7 @@ const Students = () => {
                     Registrar
                 </Button>
             </Paper>
-            <Table />
+            <Table/>
         </Container>
     )
 }

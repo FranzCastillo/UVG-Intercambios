@@ -115,7 +115,7 @@ const StudentsForm = ({id = -1}) => {
         event.preventDefault();
         setFirstTry(false);
         try {
-            if(isNewStudent){
+            if (isNewStudent) {
                 const doesExist = await doesStudentExist(id);
                 if (doesExist) { // RIse error
                     throw new Error(`El estudiante con carné "${id}" ya existe`);
@@ -142,7 +142,7 @@ const StudentsForm = ({id = -1}) => {
                         setError(error);
                     })
                 }
-            } else{
+            } else {
                 updateStudent({
                     id: student.id,
                     name: student.name,

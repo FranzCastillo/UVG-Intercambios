@@ -42,7 +42,7 @@ export default function SignUp() {
     };
 
     const signUp = async (email, password, name, lastName) => {
-        const { error} = await supabase.auth.signUp({
+        const {error} = await supabase.auth.signUp({
             email: email,
             password: password,
             options: {
@@ -77,9 +77,9 @@ export default function SignUp() {
             && lastName.length > 0
             && email.length > 0
             && password === confirmPassword
-        ){
+        ) {
             const whiteListed = await isWhitelisted(email);
-            try{
+            try {
                 if (whiteListed) {
                     await signUp(email, password, name, lastName);
                     navigate('/');
@@ -165,7 +165,7 @@ export default function SignUp() {
                                                     onMouseDown={handleMouseDownPassword}
                                                     edge="end"
                                                 >
-                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                    {showPassword ? <VisibilityOff/> : <Visibility/>}
                                                 </IconButton>
                                             </InputAdornment>
                                         }
@@ -193,7 +193,7 @@ export default function SignUp() {
                                                     onMouseDown={handleMouseDownPassword}
                                                     edge="end"
                                                 >
-                                                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                                    {showConfirmPassword ? <VisibilityOff/> : <Visibility/>}
                                                 </IconButton>
                                             </InputAdornment>
                                         }

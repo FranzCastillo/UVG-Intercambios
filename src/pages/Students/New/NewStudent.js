@@ -2,7 +2,7 @@ import StudentsForm from "../../../components/Forms/StudentsForm";
 
 
 const NewStudent = () => {
-    return(
+    return (
         <StudentsForm/>
     );
 }

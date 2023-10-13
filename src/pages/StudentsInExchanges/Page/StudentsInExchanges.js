@@ -1,7 +1,6 @@
 import Container from "@mui/material/Container";
 import {Paper} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import "./StudentsInExchanges.scss";
 import Table from '../Table/Table';
 import Button from "@mui/material/Button";
 import AddCircleIcon from '@mui/icons-material/AddCircle';

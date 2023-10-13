@@ -1,7 +1,6 @@
 import Container from "@mui/material/Container";
 import {Paper} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import "./Universities.scss";
 import Table from '../Table/Table';
 import Button from "@mui/material/Button";
 import DomainAddIcon from '@mui/icons-material/DomainAdd';

@@ -6,7 +6,8 @@ export default function DescriptionAlerts() {
     return (
         <Alert severity="info">
             <AlertTitle>Info</AlertTitle>
-            Usted ya tiene un usuario registrado en el sistema - <strong>Si esto es un error, contacte con la Unidad de Internacionalización</strong>
+            Usted ya tiene un usuario registrado en el sistema - <strong>Si esto es un error, contacte con la Unidad de
+            Internacionalización</strong>
         </Alert>
     );
 }

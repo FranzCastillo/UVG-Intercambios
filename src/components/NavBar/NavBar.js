@@ -18,7 +18,7 @@ import Logo from '../../assets/images/logo.png';
 import {useNavigate} from "react-router-dom";
 import {supabase} from "../../supabase/client";
 
-const pages = ['Estudiantes de Intercambio', 'Estudiantes', 'Universidades',  'Resumen',];
+const pages = ['Estudiantes de Intercambio', 'Estudiantes', 'Universidades', 'Resumen',];
 const settings = ['Perfil', 'Cerrar Sesión',];
 
 function NavBar() {
@@ -107,10 +107,10 @@ function NavBar() {
         <AppBar position="static" sx={{bgcolor: '#9BBE43', marginBottom: '15px'}}>
             <Container maxWidth="xl" className={"nav-bar"}>
                 <Toolbar disableGutters>
-                    <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
-                        <img src={Logo} alt="Logo" className={'logo'} />
+                    <Box sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}>
+                        <img src={Logo} alt="Logo" className={'logo'}/>
                     </Box>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                    <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
@@ -119,7 +119,7 @@ function NavBar() {
                             onClick={handleOpenNavMenu}
                             color="inherit"
                         >
-                            <MenuIcon sx={{color: 'black'}} />
+                            <MenuIcon sx={{color: 'black'}}/>
                         </IconButton>
                         <Menu
                             id="menu-appbar"
@@ -136,7 +136,7 @@ function NavBar() {
                             open={Boolean(anchorElNav)}
                             onClose={handleCloseNavMenu}
                             sx={{
-                                display: { xs: 'block', md: 'none' },
+                                display: {xs: 'block', md: 'none'},
                             }}
                         >
                             {pages.map((page) => (
@@ -146,8 +146,8 @@ function NavBar() {
                             ))}
                         </Menu>
                     </Box>
-                    <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
-                        <img src={Logo} alt="Logo" className={'logo'} />
+                    <Box sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}>
+                        <img src={Logo} alt="Logo" className={'logo'}/>
                     </Box>
                     <Typography
                         variant="h5"
@@ -156,32 +156,32 @@ function NavBar() {
                         href=""
                         sx={{
                             mr: 2,
-                            display: { xs: 'flex', md: 'none' },
+                            display: {xs: 'flex', md: 'none'},
                             flexGrow: 1,
                         }}
                     />
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                         {pages.map((page) => (
                             <Button
                                 key={page}
                                 onClick={handleMenuClick(page)}
-                                sx={{ my: 2, color: 'black', display: 'block', fontSize: '15px',  }}
+                                sx={{my: 2, color: 'black', display: 'block', fontSize: '15px',}}
                             >
                                 {page}
                             </Button>
                         ))}
                     </Box>
 
-                    <Box sx={{ flexGrow: 0 }}>
+                    <Box sx={{flexGrow: 0}}>
                         <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar sx={{bgcolor: '#9BBE43', }}>
+                            <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                                <Avatar sx={{bgcolor: '#9BBE43',}}>
                                     <AccountCircleIcon sx={{color: 'black'}}/>
                                 </Avatar>
                             </IconButton>
                         </Tooltip>
                         <Menu
-                            sx={{ mt: '45px' }}
+                            sx={{mt: '45px'}}
                             id="menu-appbar"
                             anchorEl={anchorElUser}
                             anchorOrigin={{
@@ -208,4 +208,5 @@ function NavBar() {
         </AppBar>
     );
 }
+
 export default NavBar;

@@ -6,7 +6,8 @@ export default function DescriptionAlerts() {
     return (
         <Alert severity="error">
             <AlertTitle>Error</AlertTitle>
-            Su cuenta no está habilitada para utilizar esta herramienta - <strong>Si esto es un error, contacte con la Unidad de Internacionalización</strong>
+            Su cuenta no está habilitada para utilizar esta herramienta - <strong>Si esto es un error, contacte con la
+            Unidad de Internacionalización</strong>
         </Alert>
     );
 }

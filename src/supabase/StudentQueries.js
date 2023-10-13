@@ -4,7 +4,7 @@ const insertStudent = async ({id, name, mail, career_id, gender}) => {
     const {error} = await supabase
         .from('estudiantes')
         .insert([
-            {carnet:id, nombre: name, correo: mail, id_carrera: career_id, genero: gender}
+            {carnet: id, nombre: name, correo: mail, id_carrera: career_id, genero: gender}
         ])
 
     if (error) {

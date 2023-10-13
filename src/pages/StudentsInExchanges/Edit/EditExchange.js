@@ -1,4 +1,3 @@
-import "./EditExchange.scss";
 import ExchangeForm from "../../../components/Forms/ExchangeForm";
 import {useParams} from "react-router-dom";
 

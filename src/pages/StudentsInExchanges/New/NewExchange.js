@@ -1,4 +1,3 @@
-import "./NewExchange.scss";
 import ExchangeForm from "../../../components/Forms/ExchangeForm";
 
 

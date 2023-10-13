@@ -1,5 +1,6 @@
 // https://github.com/mui/material-ui/blob/v5.13.4/docs/data/material/getting-started/templates/sign-in/SignIn.js
 import * as React from 'react';
+import {useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,7 +12,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import './LogIn.scss';
-import {useState} from "react";
 import {supabase} from "../../supabase/client";
 import {useNavigate} from "react-router-dom";
 import {FormControl, InputAdornment, InputLabel, OutlinedInput} from "@mui/material";
@@ -34,7 +34,7 @@ export default function LogIn() {
     };
 
     const logIn = async (email, password) => {
-        const { error } = await supabase.auth.signInWithPassword({
+        const {error} = await supabase.auth.signInWithPassword({
             email: email,
             password: password
         })
@@ -54,7 +54,7 @@ export default function LogIn() {
 
         setIsEmailFilled(email.length > 0);
 
-        try{
+        try {
             await logIn(email, password);
         } catch (error) {
             console.log(error);
@@ -113,7 +113,7 @@ export default function LogIn() {
                                                     onMouseDown={handleMouseDownPassword}
                                                     edge="end"
                                                 >
-                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                    {showPassword ? <VisibilityOff/> : <Visibility/>}
                                                 </IconButton>
                                             </InputAdornment>
                                         }

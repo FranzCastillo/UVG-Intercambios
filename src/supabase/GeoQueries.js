@@ -1,7 +1,9 @@
 import {supabase} from './client';
 
 const transformCountriesList = (countriesList) => {
-    const sortedData = countriesList.sort((a, b) => { return a.nombre.localeCompare(b.nombre) });
+    const sortedData = countriesList.sort((a, b) => {
+        return a.nombre.localeCompare(b.nombre)
+    });
 
     return sortedData.map((country) => {
         return {

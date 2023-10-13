@@ -4,7 +4,7 @@ import {useParams} from "react-router-dom";
 const EditStudent = () => {
     const {id} = useParams();
 
-    return(
+    return (
         <StudentsForm id={id}/>
     )
 }
