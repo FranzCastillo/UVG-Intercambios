@@ -76,23 +76,31 @@ const EditExchange = ({id = -1}) => {
 
     const [isYearEmpty, setIsYearEmpty] = useState(false);
     useEffect(() => {
-        setIsYearEmpty(exchange.year === '');
-    }, [exchange.year])
+        if (!firstTry) {
+            setIsYearEmpty(exchange.year === '');
+        }
+    }, [exchange.year, firstTry])
 
     const [isSemesterEmpty, setIsSemesterEmpty] = useState(false);
     useEffect(() => {
-        setIsSemesterEmpty(exchange.semester === '');
-    }, [exchange.semester])
+        if (!firstTry) {
+            setIsSemesterEmpty(exchange.semester === '');
+        }
+    }, [exchange.semester, firstTry])
 
     const [isStudentEmpty, setIsStudentEmpty] = useState(false);
     useEffect(() => {
-        setIsStudentEmpty(exchange.studentId === '');
-    }, [exchange.studentId]);
+        if (!firstTry) {
+            setIsStudentEmpty(exchange.studentId === '');
+        }
+    }, [exchange.studentId, firstTry]);
 
     const [isUniversityEmpty, setIsUniversityEmpty] = useState(false);
     useEffect(() => {
-        setIsUniversityEmpty(exchange.university_id === '');
-    }, [exchange.universityId]);
+        if (!firstTry) {
+            setIsUniversityEmpty(exchange.universityId === '');
+        }
+    }, [exchange.universityId, firstTry]);
 
     const [modalities, setModalities] = useState([]);
     const [states, setStates] = useState([]);
@@ -137,67 +145,79 @@ const EditExchange = ({id = -1}) => {
         }
     }, [modalities, states, universities]);
 
+    const isDataValid = () => {
+        return exchange.year !== '' &&
+            exchange.semester !== '' &&
+            exchange.studentId !== ''
+    }
+
     const handleSubmit = async (event) => {
         setFirstTry(false);
         event.preventDefault();
-        if (exchange.studentId !== "") {
+        try {
+            if (!isDataValid()) {
+                throw new Error("Hay campos vacíos")
+            }
             const studentExists = await doesStudentExist(exchange.studentId);
             if (!studentExists) {
                 setIsStudentEmpty(true);
                 throw new Error("El estudiante no existe");
             }
-        }
-        const exchangeData = {
-            year: exchange.year,
-            semester: exchange.semester,
-            studentId: exchange.studentId,
-            universityId: exchange.universityId,
-        }
-        exchangeData.modalityId = exchange.modalityId === "" ? null : exchange.modalityId;
-        exchangeData.stateId = exchange.stateId === "" ? null : exchange.stateId;
-        exchangeData.cycle = exchange.cycle === "" ? null : exchange.cycle;
-        exchangeData.date = exchange.date === "" ? null : exchange.date;
-        exchangeData.coursesUvg = exchange.coursesUvg === "" ? null : exchange.coursesUvg;
-        exchangeData.coursesExchange = exchange.coursesExchange === "" ? null : exchange.coursesExchange;
-        exchangeData.comments = exchange.comments === "" ? null : exchange.comments;
-        if (isNewExchange) {
-            insertStudentInExchange(exchangeData)
-                .then(() => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Muy Bien!',
-                        text: 'Intercambio registrado exitosamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                    setTimeout(() => {
-                        navigate('/estudiantes-de-intercambio');
-                    }, 1500);
-                }).catch((error) => {
-                setErrorOccurred(true);
-                setError(error);
-            });
-        } else {
-            exchangeData.id = id;
-            updateExchange(exchangeData)
-                .then(() => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Muy Bien!',
-                        text: 'Intercambio actualizado exitosamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                    setTimeout(() => {
-                        navigate('/estudiantes-de-intercambio');
-                    }, 1500);
-                })
-                .catch((error) => {
+            const exchangeData = {
+                year: exchange.year,
+                semester: exchange.semester,
+                studentId: exchange.studentId,
+                universityId: exchange.universityId,
+            }
+            exchangeData.modalityId = exchange.modalityId === "" ? null : exchange.modalityId;
+            exchangeData.stateId = exchange.stateId === "" ? null : exchange.stateId;
+            exchangeData.cycle = exchange.cycle === "" ? null : exchange.cycle;
+            exchangeData.date = exchange.date === "" ? null : exchange.date;
+            exchangeData.coursesUvg = exchange.coursesUvg === "" ? null : exchange.coursesUvg;
+            exchangeData.coursesExchange = exchange.coursesExchange === "" ? null : exchange.coursesExchange;
+            exchangeData.comments = exchange.comments === "" ? null : exchange.comments;
+            if (isNewExchange) {
+                insertStudentInExchange(exchangeData)
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Muy Bien!',
+                            text: 'Intercambio registrado exitosamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        setTimeout(() => {
+                            navigate('/estudiantes-de-intercambio');
+                        }, 1500);
+                    }).catch((error) => {
                     setErrorOccurred(true);
                     setError(error);
                 });
+            } else {
+                exchangeData.id = id;
+                updateExchange(exchangeData)
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Muy Bien!',
+                            text: 'Intercambio actualizado exitosamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        setTimeout(() => {
+                            navigate('/estudiantes-de-intercambio');
+                        }, 1500);
+                    })
+                    .catch((error) => {
+                        setErrorOccurred(true);
+                        setError(error);
+                    });
+            }
+        } catch (error) {
+            setErrorOccurred(true);
+            setError(error)
         }
-    };
+    }
 
     return (
         <>
@@ -238,10 +258,10 @@ const EditExchange = ({id = -1}) => {
                                             required
                                             fullWidth
                                             autoFocus
-                                            error={isYearEmpty && !firstTry}
+                                            error={isYearEmpty}
                                             value={exchange.year}
                                             InputLabelProps={{shrink: true}}
-                                            helperText={isYearEmpty && !firstTry ? 'Este campo es requerido' : ''}
+                                            helperText={isYearEmpty ? 'Este campo es requerido' : ''}
                                             onChange={(e) => {
                                                 setExchange({...exchange, year: e.target.value});
                                             }}
@@ -256,8 +276,8 @@ const EditExchange = ({id = -1}) => {
                                             name="semester"
                                             value={exchange.semester}
                                             InputLabelProps={{shrink: true}}
-                                            error={isSemesterEmpty && !firstTry}
-                                            helperText={isSemesterEmpty && !firstTry ? 'Este campo es requerido' : ''}
+                                            error={isSemesterEmpty}
+                                            helperText={isSemesterEmpty ? 'Este campo es requerido' : ''}
                                             onChange={(e) => {
                                                 setExchange({...exchange, semester: e.target.value});
                                             }}
@@ -272,8 +292,8 @@ const EditExchange = ({id = -1}) => {
                                             name="student"
                                             value={exchange.studentId}
                                             InputLabelProps={{shrink: true}}
-                                            error={isStudentEmpty && !firstTry}
-                                            helperText={isStudentEmpty && !firstTry ? 'Este campo es requerido' : ''}
+                                            error={isStudentEmpty}
+                                            helperText={isStudentEmpty? 'Este campo es requerido' : ''}
                                             onChange={(e) => {
                                                 setExchange({...exchange, studentId: e.target.value});
                                             }}

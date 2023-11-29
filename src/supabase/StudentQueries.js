@@ -24,7 +24,6 @@ const doesStudentExist = async (id) => {
         .from('estudiantes')
         .select()
         .eq('carnet', id)
-
     if (error) {
         throw new Error(`Error checking if student with id ${id} exists: ${error.message}`);
     } else {

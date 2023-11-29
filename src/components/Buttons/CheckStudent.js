@@ -16,7 +16,7 @@ const handleCheckStudent = async (studentId) => {
         Swal.fire({
             position: 'center',
             icon: 'error',
-            title: `${error.message}`,
+            title: `No se encontró el estudiante con carnet ${studentId}`,
             showConfirmButton: false,
             timer: 1500
         })
