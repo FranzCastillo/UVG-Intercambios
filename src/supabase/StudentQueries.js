@@ -1,10 +1,10 @@
 import {supabase} from './client';
 
-const insertStudent = async ({id, name, mail, career_id, gender}) => {
+const insertStudent = async ({id, name, mail, career_id, gender, campus_id}) => {
     const {error} = await supabase
         .from('estudiantes')
         .insert([
-            {carnet: id, nombre: name, correo: mail, id_carrera: career_id, genero: gender}
+            {carnet: id, nombre: name, correo: mail, id_carrera: career_id, genero: gender, id_campus: campus_id}
         ])
 
     if (error) {
@@ -44,14 +44,19 @@ const getStudentById = async (id) => {
                     id,
                     nombre_corto
                  )
+            ),
+            campus(
+                id,
+                nombre
             )
         `)
         .eq('carnet', id)
+        .single()
 
     if (error) {
         throw new Error(`Error getting student with id ${id}: ${error.message}`);
     } else {
-        const transformedData = data.map(({carnet, nombre, correo, genero, carreras}) => ({
+        const transformedData = data.map(({carnet, nombre, correo, genero, carreras, campus}) => ({
             id: carnet,
             name: nombre,
             mail: correo,
@@ -60,6 +65,8 @@ const getStudentById = async (id) => {
             career_id: carreras.id,
             faculty: carreras.facultades.nombre_corto,
             faculty_id: carreras.facultades.id,
+            campus: campus.nombre,
+            campus_id: campus.id,
         }));
         if (transformedData.length === 0) {
             throw new Error(`El estudiante con el carné '${id}' no existe`);
@@ -82,24 +89,28 @@ const getStudents = async () => {
                 facultades(
                     nombre_corto
                  )
+            ),
+            campus(
+                nombre
             )
         `)
 
     if (error) {
         throw new Error(`Error getting students: ${error.message}`);
     } else {
-        return data.map(({carnet, nombre, correo, genero, carreras}) => ({
+        return data.map(({carnet, nombre, correo, genero, carreras, campus}) => ({
             id: carnet,
             name: nombre,
             mail: correo,
             gender: genero,
             career: carreras.nombre,
             faculty: carreras.facultades.nombre_corto,
+            campus: campus.nombre,
         }));
     }
 }
 
-const updateStudent = async ({id, name, mail, career_id, gender}) => {
+const updateStudent = async ({id, name, mail, career_id, gender, campus}) => {
     const {error} = await supabase
         .from('estudiantes')
         .update({
@@ -107,7 +118,8 @@ const updateStudent = async ({id, name, mail, career_id, gender}) => {
             nombre: name,
             correo: mail,
             id_carrera: career_id,
-            genero: gender
+            genero: gender,
+            id_campus: campus,
         })
         .eq('carnet', id)
 

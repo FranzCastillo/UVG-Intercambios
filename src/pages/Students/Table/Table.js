@@ -39,7 +39,7 @@ const columns = [
     {
         field: 'mail',
         headerName: 'Correo',
-        width: 200,
+        width: 250,
     },
     {
         field: 'career',
@@ -49,12 +49,17 @@ const columns = [
     {
         field: 'faculty',
         headerName: 'Facultad',
-        width: 200,
+        width: 100,
     },
     {
         field: 'gender',
         headerName: 'Género',
         width: 100,
+    },
+    {
+        field: 'campus',
+        headerName: 'Campus',
+        width: 200,
     },
 ];
 
