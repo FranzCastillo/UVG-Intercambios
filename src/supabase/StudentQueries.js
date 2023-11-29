@@ -66,23 +66,23 @@ const getStudentById = async (id) => {
     if (error) {
         throw new Error(`Error getting student with id ${id}: ${error.message}`);
     } else {
-        const transformedData = data.map(({carnet, nombre, correo, genero, carreras, campus}) => ({
-            id: carnet,
-            name: nombre,
-            mail: correo,
-            gender_id: genero.genero,
-            gender: genero.genero,
-            career: carreras.nombre,
-            career_id: carreras.id,
-            faculty: carreras.facultades.nombre_corto,
-            faculty_id: carreras.facultades.id,
-            campus: campus.nombre,
-            campus_id: campus.id,
-        }));
+        const transformedData = {
+            id: data.carnet,
+            name: data.nombre,
+            mail: data.correo,
+            gender_id: data.generos.id,
+            gender: data.generos.genero,
+            career: data.carreras.nombre,
+            career_id: data.carreras.id,
+            faculty: data.carreras.facultades.nombre_corto,
+            faculty_id: data.carreras.facultades.id,
+            campus: data.campus.nombre,
+            campus_id: data.campus.id,
+        }
         if (transformedData.length === 0) {
             throw new Error(`El estudiante con el carné '${id}' no existe`);
         } else {
-            return transformedData[0];
+            return transformedData;
         }
     }
 }
@@ -123,7 +123,7 @@ const getStudents = async () => {
     }
 }
 
-const updateStudent = async ({id, name, mail, career_id, gender, campus}) => {
+const updateStudent = async ({id, name, mail, career_id, gender_id, campus_id}) => {
     const {error} = await supabase
         .from('estudiantes')
         .update({
@@ -131,8 +131,8 @@ const updateStudent = async ({id, name, mail, career_id, gender, campus}) => {
             nombre: name,
             correo: mail,
             id_carrera: career_id,
-            genero: gender,
-            id_campus: campus,
+            id_genero: gender_id,
+            id_campus: campus_id,
         })
         .eq('carnet', id)
 

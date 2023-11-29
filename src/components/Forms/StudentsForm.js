@@ -197,12 +197,14 @@ const StudentsForm = ({id = -1}) => {
                     setError(error);
                 })
             } else {
+                console.log(student)
                 updateStudent({
                     id: student.id,
                     name: student.name,
                     mail: student.mail,
                     career_id: student.careerId,
-                    gender: student.gender
+                    gender_id: student.genderId,
+                    campus_id: student.campusId
                 }).then(() => {
                     Swal.fire({
                         icon: 'success',
