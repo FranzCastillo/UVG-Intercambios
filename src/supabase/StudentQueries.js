@@ -4,7 +4,14 @@ const insertStudent = async ({id, name, mail, career_id, gender, campus_id}) => 
     const {error} = await supabase
         .from('estudiantes')
         .insert([
-            {carnet: id, nombre: name, correo: mail, id_carrera: career_id, genero: gender, id_campus: campus_id}
+            {
+                carnet: id,
+                nombre: name,
+                correo: mail,
+                id_carrera: career_id,
+                id_genero: gender,
+                id_campus: campus_id
+            }
         ])
 
     if (error) {
@@ -36,7 +43,10 @@ const getStudentById = async (id) => {
             carnet,
             nombre,
             correo,
-            genero,
+            generos(
+                id,
+                genero
+            ),
             carreras(
                 id,
                 nombre,
@@ -60,7 +70,8 @@ const getStudentById = async (id) => {
             id: carnet,
             name: nombre,
             mail: correo,
-            gender: genero,
+            gender_id: genero.genero,
+            gender: genero.genero,
             career: carreras.nombre,
             career_id: carreras.id,
             faculty: carreras.facultades.nombre_corto,
@@ -83,7 +94,9 @@ const getStudents = async () => {
             carnet,
             nombre,
             correo,
-            genero,
+            generos(
+                genero
+            ),
             carreras(
                 nombre,
                 facultades(
@@ -98,11 +111,11 @@ const getStudents = async () => {
     if (error) {
         throw new Error(`Error getting students: ${error.message}`);
     } else {
-        return data.map(({carnet, nombre, correo, genero, carreras, campus}) => ({
+        return data.map(({carnet, nombre, correo, generos, carreras, campus}) => ({
             id: carnet,
             name: nombre,
             mail: correo,
-            gender: genero,
+            gender: generos.genero,
             career: carreras.nombre,
             faculty: carreras.facultades.nombre_corto,
             campus: campus.nombre,
@@ -128,10 +141,36 @@ const updateStudent = async ({id, name, mail, career_id, gender, campus}) => {
     }
 }
 
+const getGenders = async () => {
+    const {data, error} = await supabase
+        .from('generos')
+        .select('id, genero')
+
+    if (error) {
+        throw new Error('Error fetching genders')
+    }
+
+    return data;
+}
+
+const getCampuses = async () => {
+    const {data, error} = await supabase
+        .from('campus')
+        .select('id, nombre')
+
+    if (error) {
+        throw new Error('Error fetching campuses')
+    }
+
+    return data;
+}
+
 export {
     updateStudent,
     getStudents,
     getStudentById,
     doesStudentExist,
     insertStudent,
+    getGenders,
+    getCampuses,
 };

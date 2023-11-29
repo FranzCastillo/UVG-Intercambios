@@ -13,11 +13,15 @@ import SaveIcon from '@mui/icons-material/Save';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
-import {doesStudentExist, getStudentById, insertStudent, updateStudent} from "../../supabase/StudentQueries";
+import {
+    doesStudentExist,
+    getCampuses,
+    getGenders,
+    getStudentById,
+    insertStudent,
+    updateStudent
+} from "../../supabase/StudentQueries";
 import {getCareersByFaculty, getFaculties} from "../../supabase/CareersQueries";
-import RadioGroup from "@mui/material/RadioGroup";
-import {FormControlLabel} from "@mui/material";
-import Radio from "@mui/material/Radio";
 import EditIcon from '@mui/icons-material/Edit';
 import Swal from 'sweetalert2'
 
@@ -25,12 +29,13 @@ import Swal from 'sweetalert2'
 const StudentsForm = ({id = -1}) => {
     const isNewStudent = id === -1;
     const [student, setStudent] = useState({
-        id: '',
-        name: '',
-        mail: '',
-        facultyId: '',
-        careerId: '',
-        gender: 'Femenino',
+        id: "",
+        name: "",
+        mail: "",
+        facultyId: "",
+        careerId: "",
+        campusId: "",
+        genderId: "",
     });
     useEffect(() => {
         if (!isNewStudent) {
@@ -41,7 +46,10 @@ const StudentsForm = ({id = -1}) => {
                     mail: student.mail,
                     facultyId: student.faculty_id,
                     careerId: student.career_id,
+                    genderId: student.gender_id,
                     gender: student.gender,
+                    campus: student.campus,
+                    campusId: student.campus_id
                 })
             }).catch((error) => {
                 setErrorOccurred(true);
@@ -58,44 +66,57 @@ const StudentsForm = ({id = -1}) => {
     const [isIdEmpty, setIsIdEmpty] = useState(false);
     useEffect(() => {
         if (!firstTry) {
-            setIsIdEmpty(student.id === '')
+            setIsIdEmpty(student.id === "")
         }
-    }, [student.id]);
+    }, [student.id, firstTry]);
 
     const [isNameEmpty, setIsNameEmpty] = useState(false);
     useEffect(() => {
         if (!firstTry) {
-            setIsNameEmpty(student.name === '')
+            setIsNameEmpty(student.name === "")
         }
-    }, [student.name]);
+    }, [student.name, firstTry]);
 
     const [isFacultyEmpty, setIsFacultyEmpty] = useState(false);
     useEffect(() => {
         if (!firstTry) {
-            setIsFacultyEmpty(student.faculty_id === '')
+            setIsFacultyEmpty(student.facultyId === "")
         }
-    }, [student.facultyId]);
+    }, [student.facultyId, firstTry]);
 
     const [isCareerEmpty, setIsCareerEmpty] = useState(false);
     useEffect(() => {
         if (!firstTry) {
-            setIsCareerEmpty(student.career_id === '')
+            setIsCareerEmpty(student.careerId === "")
         }
-    }, [student.careerId]);
+    }, [student.careerId, firstTry]);
 
     const [isMailEmpty, setIsMailEmpty] = useState(false);
     useEffect(() => {
         if (!firstTry) {
-            setIsMailEmpty(student.mail === '')
+            setIsMailEmpty(student.mail === "")
         }
-    }, [student.mail]);
+    }, [student.mail, firstTry]);
+
+    const [isCampusEmpty, setIsCampusEmpty] = useState(false);
+    useEffect(() => {
+        if (!firstTry) {
+            setIsCampusEmpty(student.campusId === "")
+        }
+    }, [student.campusId, firstTry]);
+
+    const [isGenderEmpty, setIsGenderEmpty] = useState(false);
+    useEffect(() => {
+        if (!firstTry) {
+            setIsGenderEmpty(student.genderId === "")
+        }
+    }, [student.genderId, firstTry]);
 
     const [faculties, setFaculties] = useState([]);
     useEffect(() => {
         getFaculties().then(
             (faculties) => {
                 setFaculties(faculties);
-                setLoading(false);
             }
         )
     }, []);
@@ -109,7 +130,37 @@ const StudentsForm = ({id = -1}) => {
         )
     }, [student.facultyId]);
 
+    const [campus, setCampus] = useState([]);
+    useEffect(() => {
+        getCampuses().then(
+            (campus) => {
+                setCampus(campus);
+            }
+        )
+    }, []);
+
+    const [genders, setGenders] = useState([]);
+    useEffect(() => {
+        getGenders().then(
+            (genders) => {
+                setGenders(genders);
+            }
+        )
+    }, []);
+
+    // Checks if all the data has been fetched
+    useEffect(() => {
+        if(careers && campus && genders){
+            setLoading(false);
+        }
+    }, [careers, campus, genders]);
+
     const navigate = useNavigate();
+
+
+    const isDataValid = () => {
+        return student.id !== "" && student.name !== "" && student.mail !== "" && student.facultyId !== "" && student.careerId !== "" && student.campusId !== "" && student.genderId !== "";
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -117,31 +168,34 @@ const StudentsForm = ({id = -1}) => {
         try {
             if (isNewStudent) {
                 const doesExist = await doesStudentExist(id);
-                if (doesExist) { // RIse error
+                if (doesExist) { // Rise error
                     throw new Error(`El estudiante con carné "${id}" ya existe`);
-                } else {
-                    insertStudent({
-                        id: student.id,
-                        name: student.name,
-                        mail: student.mail,
-                        career_id: student.carrerId,
-                        gender: student.gender
-                    }).then(() => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Muy Bien!',
-                            text: 'Estudiante registrado exitosamente',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        setTimeout(() => {
-                            navigate('/estudiantes');
-                        }, 1500);
-                    }).catch((error) => {
-                        setErrorOccurred(true);
-                        setError(error);
-                    })
                 }
+                if (!isDataValid()) {
+                    throw new Error('Hay campos vacíos');
+                }
+                insertStudent({
+                    id: student.id,
+                    name: student.name,
+                    mail: student.mail,
+                    career_id: student.carrerId,
+                    gender: student.genderId,
+                    campus_id: student.campusId
+                }).then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Muy Bien!',
+                        text: 'Estudiante registrado exitosamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    setTimeout(() => {
+                        navigate('/estudiantes');
+                    }, 1500);
+                }).catch((error) => {
+                    setErrorOccurred(true);
+                    setError(error);
+                })
             } else {
                 updateStudent({
                     id: student.id,
@@ -161,6 +215,7 @@ const StudentsForm = ({id = -1}) => {
                         navigate('/estudiantes');
                     }, 1500);
                 }).catch((error) => {
+                    console.log(error)
                     setErrorOccurred(true);
                     setError(error);
                 })
@@ -302,34 +357,60 @@ const StudentsForm = ({id = -1}) => {
                                             )}
                                         </TextField>
                                     </Grid>
-                                </Grid>
-                                <Grid item xs={12} sm={12} sx={{display: 'flex', justifyContent: 'center',}}>
-                                    <RadioGroup
-                                        row
-                                        aria-labelledby="gender-radio-group"
-                                        name="gender"
-                                        defaultValue={'Femenino'}
-                                        value={student.gender}
-                                        onChange={(e) => {
-                                            setStudent({
-                                                ...student,
-                                                gender: e.target.value
-                                            })
-                                        }}
-                                    >
-                                        <FormControlLabel
-                                            value="Femenino"
-                                            control={<Radio/>}
-                                            label="Femenino"
-                                            labelPlacement={"top"}
-                                        />
-                                        <FormControlLabel
-                                            value="Masculino"
-                                            control={<Radio/>}
-                                            label="Masculino"
-                                            labelPlacement={"top"}
-                                        />
-                                    </RadioGroup>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            id="genders"
+                                            select
+                                            label="Género"
+                                            fullWidth
+                                            name="genders"
+                                            value={student.genderId}
+                                            error={isGenderEmpty}
+                                            helperText={isGenderEmpty? 'Este campo es requerido' : ''}
+                                            onChange={(e) => {
+                                                setStudent({...student, genderId: e.target.value});
+                                            }}
+                                        >
+                                            {genders ? (
+                                                genders.map((gender) => (
+                                                    <MenuItem key={gender.id} value={gender.id}>
+                                                        {gender.genero}
+                                                    </MenuItem>
+                                                ))
+                                            ) : (
+                                                <MenuItem value="">
+                                                    No hay géneros disponibles
+                                                </MenuItem>
+                                            )}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            id="campus"
+                                            select
+                                            label="Campus"
+                                            fullWidth
+                                            name="campus"
+                                            value={student.campusId}
+                                            error={isCampusEmpty}
+                                            helperText={isCampusEmpty ? 'Este campo es requerido' : ''}
+                                            onChange={(e) => {
+                                                setStudent({...student, campusId: e.target.value});
+                                            }}
+                                        >
+                                            {campus ? (
+                                                campus.map((campus) => (
+                                                    <MenuItem key={campus.id} value={campus.id}>
+                                                        {campus.nombre}
+                                                    </MenuItem>
+                                                ))
+                                            ) : (
+                                                <MenuItem value="">
+                                                    No hay campus disponibles
+                                                </MenuItem>
+                                            )}
+                                        </TextField>
+                                    </Grid>
                                 </Grid>
                                 <Button
                                     type="submit"
