@@ -178,7 +178,7 @@ const StudentsForm = ({id = -1}) => {
                     id: student.id,
                     name: student.name,
                     mail: student.mail,
-                    career_id: student.carrerId,
+                    career_id: student.careerId,
                     gender: student.genderId,
                     campus_id: student.campusId
                 }).then(() => {
